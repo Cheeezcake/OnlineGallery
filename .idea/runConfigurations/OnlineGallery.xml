@@ -1,14 +1,11 @@
 <component name="ProjectRunConfigurationManager">
-  <configuration default="false" name="OnlineGallery" type="AppleRunConfiguration" factoryName="Application" PASS_PARENT_ENVS_2="true" PROJECT_NAME="OnlineGallery" TARGET_NAME="OnlineGallery" CONFIG_NAME="Debug" SCHEME_NAME="OnlineGallery" IS_LOCATION_SIMULATION_ALLOWED="true" APPLICATION_LANGUAGE="IDELaunchSchemeLanguageUseSystemLanguage" APPLICATION_REGION="" RUN_TARGET_PROJECT_NAME="OnlineGallery" RUN_TARGET_NAME="OnlineGallery" MAKE_ACTIVE="TRUE" SHOULD_DEBUG_EXTENSIONS="false">
+  <configuration default="false" name="OnlineGallery" type="AppleRunConfiguration" factoryName="Application" WORKING_DIR="" PASS_PARENT_ENVS_2="true" PROJECT_NAME="OnlineGallery" TARGET_NAME="OnlineGallery" CONFIG_NAME="Debug" SCHEME_NAME="OnlineGallery" RUN_TARGET_PROJECT_NAME="OnlineGallery" RUN_TARGET_NAME="OnlineGallery" MAKE_ACTIVE="TRUE">
     <envs>
       <env name="OS_ACTIVITY_MODE" value="disable" />
     </envs>
     <EXTENSION ID="org.jetbrains.appcode.reveal.RevealRunConfigurationExtension">
       <REVEAL_SETTINGS autoInject="false" autoInstall="true" askToEnableAutoInstall="true" />
     </EXTENSION>
-    <embedded_app_extension_list />
-    <method v="2">
-      <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
-    </method>
+    <method />
   </configuration>
 </component>
