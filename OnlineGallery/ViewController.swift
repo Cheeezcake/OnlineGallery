@@ -8,7 +8,6 @@
 
 import UIKit
 import Alamofire
-import SwiftyJSON
 
 class ViewController: UIViewController {
     
@@ -29,13 +28,13 @@ class ViewController: UIViewController {
         collectionView.dataSource = self
         collectionView.delegate = self
         
-        let blankImages = Image(id: 1, contentUrl: "111")
+       // let blankImages = Image(id: 1, contentUrl: "111")
         
-        var blankGalleryItem = GalleryItem(id: 1, name: "name 1", description: "description 1", new: true, popular: true, image: blankImages)
+      //  var blankGalleryItem = GalleryItem(id: 1, name: "name 1", description: "description 1", new: true, popular: true, image: blankImages)
         
       //  self.galleryItemArray = [blankGalleryItem, blankGalleryItem]
         
-        Alamofire.request("http://gallery.dev.webant.ru/api/photos?new=true&popular=true&page=1&limit=15").responseData{ response in
+        Alamofire.request("http://gallery.dev.webant.ru/api/photos?new=false&popular=true&page=1&limit=20").responseData{ response in
             //let json = JSON(response.result.value!)
             let fgalleryItemArray: GalleryResponse = try! JSONDecoder().decode(GalleryResponse.self, from: response.result.value!)
             self.galleryItemArray = fgalleryItemArray.data.map { $0 }
@@ -61,6 +60,19 @@ extension ViewController: UICollectionViewDataSource, UICollectionViewDelegate{
         if let itemCollectionCell = collectionView.dequeueReusableCell(withReuseIdentifier: "itemCell", for: indexPath) as? ItemCollectionViewCell{
         
             itemCollectionCell.setup(galleryItemArray[indexPath.row])
+            
+            itemCollectionCell.layer.cornerRadius = 20.0
+            itemCollectionCell.layer.borderWidth = 1.0
+            itemCollectionCell.layer.borderColor = UIColor.clear.cgColor
+            itemCollectionCell.layer.masksToBounds = true
+            
+            itemCollectionCell.layer.shadowColor = UIColor.lightGray.cgColor
+            itemCollectionCell.layer.shadowOffset = CGSize(width: 0, height: 2.0)
+            itemCollectionCell.layer.shadowRadius = 3.0
+            itemCollectionCell.layer.shadowOpacity = 0.5
+            itemCollectionCell.layer.masksToBounds = false
+            itemCollectionCell.layer.shadowPath = UIBezierPath(roundedRect: itemCollectionCell.bounds, cornerRadius: itemCollectionCell.layer.cornerRadius).cgPath
+            itemCollectionCell.layer.backgroundColor = UIColor.clear.cgColor
             
             return itemCollectionCell
         }
@@ -90,14 +102,16 @@ extension ViewController: UICollectionViewDataSource, UICollectionViewDelegate{
 extension ViewController: UICollectionViewDelegateFlowLayout {
 
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
-        let yourWidth = (collectionView.bounds.width-20) / 2.0
+        let yourWidth = (collectionView.bounds.width-30) / 2.0
         let yourHeight = yourWidth
         
         return CGSize(width: yourWidth, height: yourHeight)
     }
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, insetForSectionAt section: Int) -> UIEdgeInsets {
-        return UIEdgeInsets.zero
+        //return UIEdgeInsets.zero
+        return UIEdgeInsets(top: 5, left: 5, bottom: 5, right: 5)
+
     }
 
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumInteritemSpacingForSectionAt section: Int) -> CGFloat {

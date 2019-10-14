@@ -1,9 +1,9 @@
-platform :ios, '9.0'
+platform :ios, '10.0'
 use_frameworks!
 
 target 'OnlineGallery' do
 
     pod 'Alamofire', '~> 4.7.2'
-    pod 'SwiftyJSON', '~> 3.0'
+    pod 'Kingfisher', '~> 4.10.1'
 
 end
