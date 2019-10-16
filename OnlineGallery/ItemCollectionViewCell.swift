@@ -11,13 +11,12 @@ import Kingfisher
 
 class ItemCollectionViewCell: UICollectionViewCell {
   
-    @IBOutlet weak var labelView: UILabel!
     @IBOutlet weak var imageView: UIImageView!
     
     var gallery: GalleryItem?
     
     func setup(_ item: GalleryItem!) {
-        let processor = CroppingImageProcessor(size: CGSize(width: 500, height: 500), anchor: CGPoint(x: 0.5, y: 0.5))
+        let processor = CroppingImageProcessor(size: CGSize(width: 800, height: 500), anchor: CGPoint(x: 0.5, y: 0.5))
         //imageView.kf.indicatorType = .activity
         imageView.kf.indicatorType = .activity
 
@@ -29,7 +28,6 @@ class ItemCollectionViewCell: UICollectionViewCell {
                                     .transition(.fade(1)),
                                     .cacheOriginalImage
             ])
-            self.labelView.text = item!.name
             }
         }
 

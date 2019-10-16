@@ -19,11 +19,11 @@ struct Image: Codable {
 }
 
 struct GalleryItem: Codable {
-    var id: Int
-    var name: String
-    var description: String
-    var new: Bool
-    var popular: Bool
+    var id: Int? = 0
+    var name: String? = "nil"
+    var description: String? = "nil"
+    var new: Bool? = false
+    var popular: Bool? = false
     var image: Image
     
 //    enum CodingKeys: String, CodingKey {
@@ -35,6 +35,9 @@ struct GalleryItem: Codable {
 //        case image
 //
 //    }
+//   init() {
+    
+//    }
 }
 
 struct  GalleryResponse: Codable {
@@ -42,5 +45,8 @@ struct  GalleryResponse: Codable {
 //        case items
 //    }
     let data: [GalleryItem]
+//    init() {
+        
+//    }
 }
 
