@@ -7,6 +7,7 @@
 //
 
 import Foundation
+import Alamofire
 
 struct Image: Codable {
     var id: Int
@@ -44,9 +45,17 @@ struct  GalleryResponse: Codable {
 //    enum CodingKeys: String, CodingKey {
 //        case items
 //    }
+    let countOfPages: Int
     let data: [GalleryItem]
 //    init() {
         
 //    }
+}
+
+struct Connectivity {
+    static let sharedInstance = NetworkReachabilityManager()!
+    static var isConnectedToInternet:Bool {
+        return self.sharedInstance.isReachable
+    }
 }
 

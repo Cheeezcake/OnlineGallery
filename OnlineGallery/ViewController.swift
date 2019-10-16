@@ -14,15 +14,12 @@ class ViewController: UIViewController {
     @IBOutlet weak var collectionView: UICollectionView!
     
     var galleryItemArray = [GalleryItem]()
-    var isLoading: Bool = false
-    var page = 1
-    let emptyData = Data()
-   // private let itemsPerRow: CGFloat = 2
-
+    var currentPage = 0
+    var pageCount = 0
+    
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        
         collectionView.dataSource = self
         collectionView.delegate = self
         
@@ -31,20 +28,43 @@ class ViewController: UIViewController {
         //  var blankGalleryItem = GalleryItem(id: 1, name: "name 1", description: "description 1", new: true, popular: true, image: blankImages)
         
         //  self.galleryItemArray = [blankGalleryItem, blankGalleryItem]
-      //  func loadPictures(page: Int){
-            Alamofire.request("http://gallery.dev.webant.ru/api/photos?new=false&popular=true&page=1&limit=20").responseData{ response in
-                //let json = JSON(response.result.value!)
-                let fgalleryItemArray: GalleryResponse = try! JSONDecoder().decode(GalleryResponse.self, from: response.result.value!)
-                self.galleryItemArray.append(contentsOf: fgalleryItemArray.data.map{ $0 })
-                    //{ $0 }
-                self.collectionView.reloadData()
-                print("heey")
-                //print(self.galleryItemArray)
-                //print("Page: \(page)")
-            }
-        }
+        //  func loadPictures(page: Int){
+        
+        //1 шаг
+//        Alamofire.request("http://gallery.dev.webant.ru/api/photos?new=false&popular=true&page=1&limit=20").responseData{ response in
+//            //let json = JSON(response.result.value!)
+//            let fgalleryItemArray: GalleryResponse = try! JSONDecoder().decode(GalleryResponse.self, from: response.result.value!)
+//            self.galleryItemArray.append(contentsOf: fgalleryItemArray.data.map{ $0 })
+//            //{ $0 }
+//            self.collectionView.reloadData()
+//            print("heey")
+//  }
+            loadData()
+            //print(self.galleryItemArray)
+            //print("Page: \(page)")
         
     }
+    func loadData(){
+        //Проверяем соединение с сетью
+        if Connectivity.isConnectedToInternet {
+            print("Connected")
+            if currentPage <= pageCount {
+                currentPage += 1
+                print("Loading started. Page: \(currentPage) of ")
+                Alamofire.request("http://gallery.dev.webant.ru/api/photos?new=false&popular=true&page=\(currentPage)&limit=20").responseData{ response in
+                    let fgalleryItemArray: GalleryResponse = try! JSONDecoder().decode(GalleryResponse.self, from: response.result.value! )
+                    self.galleryItemArray.append(contentsOf: fgalleryItemArray.data.map{ $0 })
+                    self.collectionView.reloadData()
+                    self.pageCount = fgalleryItemArray.countOfPages
+                    print(self.pageCount)
+                }
+            }
+        }else {
+            print("No Internet")
+        }
+    }
+}
+
 
 extension ViewController: UICollectionViewDataSource, UICollectionViewDelegate{
     
@@ -99,29 +119,49 @@ extension ViewController: UICollectionViewDataSource, UICollectionViewDelegate{
 
 extension ViewController: UICollectionViewDelegateFlowLayout, UIScrollViewDelegate {
     
-    func scrollViewDidScroll(_ scrollView: UIScrollView) {
-        let contentOffsetX = scrollView.contentOffset.x
-        if contentOffsetX >= (scrollView.contentSize.width - scrollView.bounds.width) - 1 /* Needed offset */ {
-            guard !self.isLoading else { return }
-            self.isLoading = true
-            // load more data
-            // than set self.isLoading to false when new data is loaded
-            page += 1
-//        let lastSectionIndex = (self.collectionView?.numberOfSections)! - 1
-//        let lastItemIndex = (self.collectionView.numberOfItems(inSection: lastSectionIndex))
-//        if (indexPath.row == (lastItemIndex - 1 )){
-            Alamofire.request("http://gallery.dev.webant.ru/api/photos?new=false&popular=true&page=\(page)&limit=20").responseData{ response in
-                //let json = JSON(response.result.value!)
-                let fgalleryItemArray: GalleryResponse = try! JSONDecoder().decode(GalleryResponse.self, from: response.result.value! )
-                self.galleryItemArray.append(contentsOf: fgalleryItemArray.data.map{ $0 })
-                //{ $0 }
-                self.collectionView.reloadData()
-                print("heey extension, page \(self.page)")
-                self.isLoading = false
-            }
+//    func scrollViewDidScroll(_ scrollView: UIScrollView) {
+//        let contentOffsetX = scrollView.contentOffset.x
+//        if contentOffsetX >= (scrollView.contentSize.width - scrollView.bounds.width) - 1 /* Needed offset */ {
+//            guard !self.isLoading else { return }
+//            self.isLoading = true
+//            // load more data
+//            // than set self.isLoading to false when new data is loaded
+//            page += 1
+////        let lastSectionIndex = (self.collectionView?.numberOfSections)! - 1
+////        let lastItemIndex = (self.collectionView.numberOfItems(inSection: lastSectionIndex))
+////        if (indexPath.row == (lastItemIndex - 1 )){
+//            Alamofire.request("http://gallery.dev.webant.ru/api/photos?new=false&popular=true&page=\(page)&limit=20").responseData{ response in
+//                //let json = JSON(response.result.value!)
+//                let fgalleryItemArray: GalleryResponse = try! JSONDecoder().decode(GalleryResponse.self, from: response.result.value! )
+//                self.galleryItemArray.append(contentsOf: fgalleryItemArray.data.map{ $0 })
+//                //{ $0 }
+//                self.collectionView.reloadData()
+//                print("heey extension, page \(self.page)")
+//                self.isLoading = false
+//            }
+//        }
+//   }
+
+    func collectionView(_ collectionView: UICollectionView, willDisplay cell: UICollectionViewCell, forItemAt indexPath: IndexPath) {
+        if indexPath.row == galleryItemArray.count-1{
+            loadData()
         }
     }
-
+    
+//    func collectionView(_collectionView: UICollectionView, willDisplay cell: UICollectionViewCell, forItemAt indexPath: IndexPath){
+//        if indexPath.row == galleryItemArray.count - 1{
+//            page += 1
+//        }
+//    }
+    
+//    func loadData(){
+//        Alamofire.request("http://gallery.dev.webant.ru/api/photos?new=false&popular=true&page=\(page)&limit=20").responseData{ response in
+//            //let json = JSON(response.result.value!)
+//            let fgalleryItemArray: GalleryResponse = try! JSONDecoder().decode(GalleryResponse.self, from: response.result.value! )
+//            self.galleryItemArray.append(contentsOf: fgalleryItemArray.data.map{ $0 })
+//        }
+//    }
+    
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
         let yourWidth = (collectionView.bounds.width-45) / 2.0
         let yourHeight = yourWidth * 0.71
