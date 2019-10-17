@@ -12,7 +12,8 @@ import Alamofire
 class ViewController: UIViewController {
     
     @IBOutlet weak var collectionView: UICollectionView!
-    
+
+
     var galleryItemArray = [GalleryItem]()
     var currentPage = 0
     var pageCount = 0
@@ -20,9 +21,10 @@ class ViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        collectionView.dataSource = self
-        collectionView.delegate = self
-        
+//        collectionView.dataSource = self
+//        collectionView.delegate = self
+            collectionView.dataSource =  self
+            collectionView.delegate = self
         // let blankImages = Image(id: 1, contentUrl: "111")
         
         //  var blankGalleryItem = GalleryItem(id: 1, name: "name 1", description: "description 1", new: true, popular: true, image: blankImages)
@@ -68,7 +70,16 @@ class ViewController: UIViewController {
 
 extension ViewController: UICollectionViewDataSource, UICollectionViewDelegate{
     
+    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        self.openDetailVC(at: indexPath.row)
+    }
     
+    func openDetailVC(at index: Int) {
+        let storyboard = UIStoryboard(name: "Main", bundle: nil)
+        let vc = storyboard.instantiateViewController(withIdentifier: "detailVC") as? DetailViewController
+        vc?.detImage = galleryItemArray[index]
+        self.navigationController?.pushViewController(vc!, animated: true)
+    }
     
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         return self.galleryItemArray.count
@@ -96,71 +107,15 @@ extension ViewController: UICollectionViewDataSource, UICollectionViewDelegate{
         }
         return UICollectionViewCell()
     }
-    
-  
-//    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
-//        let width = (view.frame.width - 20) / 2.0
-//        return CGSize(width: width, height: width)
-//    }
-//
-//    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, insetForSectionAt section: Int) -> UIEdgeInsets {
-//        return UIEdgeInsets(top: 5, left: 5, bottom: 5, right: 5)
-//    }
-//
-//    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumLineSpacingForSectionAt section: Int) -> CGFloat {
-//        return 10
-//    }
-//
-//    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumInteritemSpacingForSectionAt section: Int) -> CGFloat {
-//        return 10
-//    }
-    
 }
 
 extension ViewController: UICollectionViewDelegateFlowLayout, UIScrollViewDelegate {
-    
-//    func scrollViewDidScroll(_ scrollView: UIScrollView) {
-//        let contentOffsetX = scrollView.contentOffset.x
-//        if contentOffsetX >= (scrollView.contentSize.width - scrollView.bounds.width) - 1 /* Needed offset */ {
-//            guard !self.isLoading else { return }
-//            self.isLoading = true
-//            // load more data
-//            // than set self.isLoading to false when new data is loaded
-//            page += 1
-////        let lastSectionIndex = (self.collectionView?.numberOfSections)! - 1
-////        let lastItemIndex = (self.collectionView.numberOfItems(inSection: lastSectionIndex))
-////        if (indexPath.row == (lastItemIndex - 1 )){
-//            Alamofire.request("http://gallery.dev.webant.ru/api/photos?new=false&popular=true&page=\(page)&limit=20").responseData{ response in
-//                //let json = JSON(response.result.value!)
-//                let fgalleryItemArray: GalleryResponse = try! JSONDecoder().decode(GalleryResponse.self, from: response.result.value! )
-//                self.galleryItemArray.append(contentsOf: fgalleryItemArray.data.map{ $0 })
-//                //{ $0 }
-//                self.collectionView.reloadData()
-//                print("heey extension, page \(self.page)")
-//                self.isLoading = false
-//            }
-//        }
-//   }
 
     func collectionView(_ collectionView: UICollectionView, willDisplay cell: UICollectionViewCell, forItemAt indexPath: IndexPath) {
         if indexPath.row == galleryItemArray.count-1{
             loadData()
         }
     }
-    
-//    func collectionView(_collectionView: UICollectionView, willDisplay cell: UICollectionViewCell, forItemAt indexPath: IndexPath){
-//        if indexPath.row == galleryItemArray.count - 1{
-//            page += 1
-//        }
-//    }
-    
-//    func loadData(){
-//        Alamofire.request("http://gallery.dev.webant.ru/api/photos?new=false&popular=true&page=\(page)&limit=20").responseData{ response in
-//            //let json = JSON(response.result.value!)
-//            let fgalleryItemArray: GalleryResponse = try! JSONDecoder().decode(GalleryResponse.self, from: response.result.value! )
-//            self.galleryItemArray.append(contentsOf: fgalleryItemArray.data.map{ $0 })
-//        }
-//    }
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
         let yourWidth = (collectionView.bounds.width-45) / 2.0

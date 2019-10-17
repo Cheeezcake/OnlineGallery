@@ -16,8 +16,7 @@ class ItemCollectionViewCell: UICollectionViewCell {
     var gallery: GalleryItem?
     
     func setup(_ item: GalleryItem!) {
-        let processor = CroppingImageProcessor(size: CGSize(width: 800, height: 500), anchor: CGPoint(x: 0.5, y: 0.5))
-        //imageView.kf.indicatorType = .activity
+        let processor = CroppingImageProcessor(size: CGSize(width: 400, height: 300), anchor: CGPoint(x: 0.5, y: 0.5))
         imageView.kf.indicatorType = .activity
 
         self.imageView.kf.setImage(with: URL(string: "http://gallery.dev.webant.ru/media/\(item!.image.contentUrl)")!,
