@@ -19,10 +19,14 @@ class ViewController: UIViewController {
     var pageCount = 0
     
     
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        navigationController?.setNavigationBarHidden(true, animated: false)
+    }
+    
     override func viewDidLoad() {
         super.viewDidLoad()
-//        collectionView.dataSource = self
-//        collectionView.delegate = self
+
             collectionView.dataSource =  self
             collectionView.delegate = self
         // let blankImages = Image(id: 1, contentUrl: "111")
