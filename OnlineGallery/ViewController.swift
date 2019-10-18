@@ -53,7 +53,7 @@ class ViewController: UIViewController {
             if currentPage <= pageCount {
                 currentPage += 1
                 print("Loading started. Page: \(currentPage) of ")
-                Alamofire.request("http://gallery.dev.webant.ru/api/photos?new=false&popular=true&page=\(currentPage)&limit=20").responseData{ response in
+                Alamofire.request("http://gallery.dev.webant.ru/api/photos?new=true&popular=false&page=\(currentPage)&limit=10").responseData{ response in
                     let fgalleryItemArray: GalleryResponse = try! JSONDecoder().decode(GalleryResponse.self, from: response.result.value! )
                     self.galleryItemArray.append(contentsOf: fgalleryItemArray.data.map{ $0 })
                     self.collectionView.reloadData()

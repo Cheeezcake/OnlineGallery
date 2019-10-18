@@ -15,6 +15,10 @@ class DetailViewController: UIViewController {
     
     @IBOutlet weak var detImageView: UIImageView!
     
+    @IBOutlet weak var detTitleLable: UILabel!
+    
+    @IBOutlet weak var detDescription: UITextView!
+    
     
     var detImage: GalleryItem?
     
@@ -34,6 +38,8 @@ class DetailViewController: UIViewController {
                                         .cacheOriginalImage
                 ])
         self.detImageView.contentMode = UIView.ContentMode.scaleAspectFit
-        print(detImage?.image.contentUrl)
+        self.detTitleLable.text = detImage!.name
+        self.detDescription.text = detImage!.description
+        //print(detImage?.image.contentUrl)
     }
 }
