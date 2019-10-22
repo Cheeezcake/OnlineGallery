@@ -8,16 +8,22 @@
 
 import UIKit
 import Alamofire
-
+enum SourceType {
+    case new
+    case popular
+}
 class ViewController: UIViewController {
     
     @IBOutlet weak var collectionView: UICollectionView!
+    public var type: SourceType!
 
+    var galleryItemArrayNew = [GalleryItem]()
+    var galleryItemArrayPopular = [GalleryItem]()
+    var currentPageOfNew = 0
+    var currentPageOfPopular = 0
+    var pageCountOfNew = 0
+    var pageCountOfPopular = 0
 
-    var galleryItemArray = [GalleryItem]()
-    var currentPage = 0
-    var pageCount = 0
-    
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
@@ -29,44 +35,48 @@ class ViewController: UIViewController {
 
             collectionView.dataSource =  self
             collectionView.delegate = self
-        // let blankImages = Image(id: 1, contentUrl: "111")
-        
-        //  var blankGalleryItem = GalleryItem(id: 1, name: "name 1", description: "description 1", new: true, popular: true, image: blankImages)
-        
-        //  self.galleryItemArray = [blankGalleryItem, blankGalleryItem]
-        //  func loadPictures(page: Int){
-        
-        //1 шаг
-//        Alamofire.request("http://gallery.dev.webant.ru/api/photos?new=false&popular=true&page=1&limit=20").responseData{ response in
-//            //let json = JSON(response.result.value!)
-//            let fgalleryItemArray: GalleryResponse = try! JSONDecoder().decode(GalleryResponse.self, from: response.result.value!)
-//            self.galleryItemArray.append(contentsOf: fgalleryItemArray.data.map{ $0 })
-//            //{ $0 }
-//            self.collectionView.reloadData()
-//            print("heey")
-//  }
+
             loadData()
-            //print(self.galleryItemArray)
-            //print("Page: \(page)")
         
     }
     func loadData(){
         //Проверяем соединение с сетью
         if Connectivity.isConnectedToInternet {
             print("Connected")
-            if currentPage <= pageCount {
-                currentPage += 1
-                print("Loading started. Page: \(currentPage) of ")
-                Alamofire.request("http://gallery.dev.webant.ru/api/photos?new=true&popular=false&page=\(currentPage)&limit=10").responseData{ response in
-                    let fgalleryItemArray: GalleryResponse = try! JSONDecoder().decode(GalleryResponse.self, from: response.result.value! )
-                    self.galleryItemArray.append(contentsOf: fgalleryItemArray.data.map{ $0 })
-                    self.collectionView.reloadData()
-                    self.pageCount = fgalleryItemArray.countOfPages
-                    print(self.pageCount)
+            if type == .new{
+                if currentPageOfNew <= pageCountOfNew {
+                    currentPageOfNew += 1
+                    print("Loading 'New' started. Page: \(currentPageOfNew) of ")
+                    Alamofire.request("http://gallery.dev.webant.ru/api/photos?new=true&popular=false&page=\(currentPageOfNew)&limit=10").responseData{ response in
+                        let fgalleryItemArray: GalleryResponse = try! JSONDecoder().decode(GalleryResponse.self, from: response.result.value! )
+                        self.galleryItemArrayNew.append(contentsOf: fgalleryItemArray.data.map{ $0 })
+                        self.collectionView.reloadData()
+                        self.pageCountOfNew = fgalleryItemArray.countOfPages
+                        print(self.pageCountOfNew)
+                    }
+                }
+            } else {
+                if currentPageOfPopular <= pageCountOfPopular {
+                    currentPageOfPopular += 1
+                    print("Loading 'Popular' started. Page: \(currentPageOfPopular) of ")
+                    Alamofire.request("http://gallery.dev.webant.ru/api/photos?new=false&popular=true&page=\(currentPageOfPopular)&limit=10").responseData{ response in
+                        let fgalleryItemArray: GalleryResponse = try! JSONDecoder().decode(GalleryResponse.self, from: response.result.value! )
+                        self.galleryItemArrayPopular.append(contentsOf: fgalleryItemArray.data.map{ $0 })
+                        self.collectionView.reloadData()
+                        self.pageCountOfPopular = fgalleryItemArray.countOfPages
+                        print(self.pageCountOfPopular)
+                    }
                 }
             }
         }else {
             print("No Internet")
+        }
+    }
+     func chooseArray() -> [GalleryItem] {
+        if type == .new {
+            return galleryItemArrayNew
+        } else {
+            return galleryItemArrayPopular
         }
     }
 }
@@ -81,18 +91,18 @@ extension ViewController: UICollectionViewDataSource, UICollectionViewDelegate{
     func openDetailVC(at index: Int) {
         let storyboard = UIStoryboard(name: "Main", bundle: nil)
         let vc = storyboard.instantiateViewController(withIdentifier: "detailVC") as? DetailViewController
-        vc?.detImage = galleryItemArray[index]
+        vc?.detImage = chooseArray()[index]
         self.navigationController?.pushViewController(vc!, animated: true)
     }
     
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return self.galleryItemArray.count
+        return chooseArray().count
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         if let itemCollectionCell = collectionView.dequeueReusableCell(withReuseIdentifier: "itemCell", for: indexPath) as? ItemCollectionViewCell{
         
-            itemCollectionCell.setup(galleryItemArray[indexPath.row])
+            itemCollectionCell.setup(chooseArray()[indexPath.row])
             
             itemCollectionCell.layer.cornerRadius = 20.0
             itemCollectionCell.layer.borderWidth = 1.0
@@ -116,7 +126,7 @@ extension ViewController: UICollectionViewDataSource, UICollectionViewDelegate{
 extension ViewController: UICollectionViewDelegateFlowLayout, UIScrollViewDelegate {
 
     func collectionView(_ collectionView: UICollectionView, willDisplay cell: UICollectionViewCell, forItemAt indexPath: IndexPath) {
-        if indexPath.row == galleryItemArray.count-1{
+        if indexPath.row == chooseArray().count-1{
             loadData()
         }
     }
@@ -130,7 +140,7 @@ extension ViewController: UICollectionViewDelegateFlowLayout, UIScrollViewDelega
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, insetForSectionAt section: Int) -> UIEdgeInsets {
         //return UIEdgeInsets.zero
-        return UIEdgeInsets(top: 20, left: 15, bottom: 0, right: 15)
+        return UIEdgeInsets(top: 40, left: 15, bottom: 0, right: 15)
 
     }
 

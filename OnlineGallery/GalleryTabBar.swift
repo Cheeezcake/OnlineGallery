@@ -15,29 +15,30 @@ class GalleryTabBar: UITabBarController, UITabBarControllerDelegate {
         super.viewDidLoad()
         
         self.delegate = self
+        //       self.tabBarController?.delegate = self
         
         let storyboard = UIStoryboard(name: "Main", bundle: nil)
         
-        // New VC
+        // First NavigationController
         guard let firstNC = self.children[0] as? UINavigationController else {
             fatalError("В расскадровке у таббара отсутствует связь с navigationController")
         }
-        
+        // First ViewController "New"
         let newVC = storyboard.instantiateViewController(withIdentifier: "viewController") as? ViewController
+        newVC?.type = .new
         firstNC.pushViewController(newVC!, animated: false)
+       // newVC?.tabBarItem.title = "New"
+       
         
-        //Second tab
-        let tabPopular = ViewController()
-        let tabPopularBarItem = UITabBarItem(title: "Tab POPULAR", image: nil, selectedImage: nil)
-        
-        tabPopular.tabBarItem = tabPopularBarItem
-        
-        //self.viewControllers = [tabNew, tabPopular]
-        
-        // UITabBarControllerDelegate method
-        func tabBarController(_ tabBarController: UITabBarController, didSelectViewController viewController: UIViewController) {
-       // print(self.selectedIndex)
+        // Second NavigationController
+        guard let secondNC = self.children[1] as? UINavigationController else {
+            fatalError("В расскадровке у таббара отсутствует связь с navigationController")
         }
+        // Second ViewController "Popular"
+        let popularVC = storyboard.instantiateViewController(withIdentifier: "viewController") as? ViewController
+        popularVC?.type = .popular
+       // popularVC?.tabBarItem.title = "Popular"
+        secondNC.pushViewController(popularVC!, animated: false)
         
     }
 }
