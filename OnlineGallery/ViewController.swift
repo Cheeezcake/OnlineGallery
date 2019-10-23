@@ -39,10 +39,11 @@ class ViewController: UIViewController {
             loadData()
         
     }
-    func loadData(){
+  @objc func loadData(){
         //Проверяем соединение с сетью
         if Connectivity.isConnectedToInternet {
             print("Connected")
+            showCells()
             if type == .new{
                 if currentPageOfNew <= pageCountOfNew {
                     currentPageOfNew += 1
@@ -69,7 +70,12 @@ class ViewController: UIViewController {
                 }
             }
         }else {
+           //here to hide cells
+            hideCells()
             print("No Internet")
+            let _ = Timer.scheduledTimer(timeInterval: 0.5, target: self,
+                                         selector: #selector(loadData),
+                                         userInfo: nil, repeats: false)
         }
     }
      func chooseArray() -> [GalleryItem] {
@@ -81,8 +87,15 @@ class ViewController: UIViewController {
     }
 }
 
-
 extension ViewController: UICollectionViewDataSource, UICollectionViewDelegate{
+    
+    func hideCells(){
+        collectionView.isHidden = true
+    }
+    
+    func showCells(){
+        collectionView.isHidden = false
+    }
     
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         self.openDetailVC(at: indexPath.row)
