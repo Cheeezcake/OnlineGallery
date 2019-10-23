@@ -16,7 +16,12 @@ class ViewController: UIViewController {
     
     @IBOutlet weak var collectionView: UICollectionView!
     public var type: SourceType!
-
+    
+    @IBOutlet weak var noConnectionImage: UIImageView!
+    @IBOutlet weak var noConnectionTitle: UILabel!
+    @IBOutlet weak public var newOrPopularTitle: UILabel!
+    
+    
     var galleryItemArrayNew = [GalleryItem]()
     var galleryItemArrayPopular = [GalleryItem]()
     var currentPageOfNew = 0
@@ -45,10 +50,11 @@ class ViewController: UIViewController {
             print("Connected")
             showCells()
             if type == .new{
+                self.newOrPopularTitle.text = "New"
                 if currentPageOfNew <= pageCountOfNew {
                     currentPageOfNew += 1
                     print("Loading 'New' started. Page: \(currentPageOfNew) of ")
-                    Alamofire.request("http://gallery.dev.webant.ru/api/photos?new=true&popular=false&page=\(currentPageOfNew)&limit=10").responseData{ response in
+                    Alamofire.request("http://gallery.dev.webant.ru/api/photos?new=true&popular=false&page=\(currentPageOfNew)&limit=4").responseData{ response in
                         let fgalleryItemArray: GalleryResponse = try! JSONDecoder().decode(GalleryResponse.self, from: response.result.value! )
                         self.galleryItemArrayNew.append(contentsOf: fgalleryItemArray.data.map{ $0 })
                         self.collectionView.reloadData()
@@ -57,10 +63,11 @@ class ViewController: UIViewController {
                     }
                 }
             } else {
+                self.newOrPopularTitle.text = "Popular"
                 if currentPageOfPopular <= pageCountOfPopular {
                     currentPageOfPopular += 1
                     print("Loading 'Popular' started. Page: \(currentPageOfPopular) of ")
-                    Alamofire.request("http://gallery.dev.webant.ru/api/photos?new=false&popular=true&page=\(currentPageOfPopular)&limit=10").responseData{ response in
+                    Alamofire.request("http://gallery.dev.webant.ru/api/photos?new=false&popular=true&page=\(currentPageOfPopular)&limit=4").responseData{ response in
                         let fgalleryItemArray: GalleryResponse = try! JSONDecoder().decode(GalleryResponse.self, from: response.result.value! )
                         self.galleryItemArrayPopular.append(contentsOf: fgalleryItemArray.data.map{ $0 })
                         self.collectionView.reloadData()
@@ -72,6 +79,8 @@ class ViewController: UIViewController {
         }else {
            //here to hide cells
             hideCells()
+            noConnectionImage.isHidden = false
+            noConnectionTitle.isHidden = false
             print("No Internet")
             let _ = Timer.scheduledTimer(timeInterval: 0.5, target: self,
                                          selector: #selector(loadData),
@@ -153,7 +162,7 @@ extension ViewController: UICollectionViewDelegateFlowLayout, UIScrollViewDelega
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, insetForSectionAt section: Int) -> UIEdgeInsets {
         //return UIEdgeInsets.zero
-        return UIEdgeInsets(top: 40, left: 15, bottom: 0, right: 15)
+        return UIEdgeInsets(top:20, left: 15, bottom: 0, right: 15)
 
     }
 
