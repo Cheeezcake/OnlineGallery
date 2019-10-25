@@ -10,7 +10,7 @@ import UIKit
 import Kingfisher
 
 class ItemCollectionViewCell: UICollectionViewCell {
-  
+    
     @IBOutlet weak var imageView: UIImageView!
     
     var gallery: GalleryItem?
@@ -18,7 +18,6 @@ class ItemCollectionViewCell: UICollectionViewCell {
     func setup(_ item: GalleryItem!) {
         let processor = CroppingImageProcessor(size: CGSize(width: 500, height: 400), anchor: CGPoint(x: 0.5, y: 0.5))
         imageView.kf.indicatorType = .activity
-
         self.imageView.kf.setImage(with: URL(string: "http://gallery.dev.webant.ru/media/\(item!.image.contentUrl)")!,
                                    placeholder: UIImage(named: "placeholderImage"),
                                    options: [
@@ -27,8 +26,8 @@ class ItemCollectionViewCell: UICollectionViewCell {
                                     .transition(.fade(1)),
                                     .cacheOriginalImage
             ])
-            }
-        }
+    }
+}
 
 
 extension UIView {

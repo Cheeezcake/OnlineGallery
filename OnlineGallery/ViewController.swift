@@ -8,10 +8,13 @@
 
 import UIKit
 import Alamofire
+import NVActivityIndicatorView
+
 enum SourceType {
     case new
     case popular
 }
+
 class ViewController: UIViewController {
     
     @IBOutlet weak var collectionView: UICollectionView!
@@ -20,79 +23,138 @@ class ViewController: UIViewController {
     @IBOutlet weak var noConnectionImage: UIImageView!
     @IBOutlet weak var noConnectionTitle: UILabel!
     @IBOutlet weak public var newOrPopularTitle: UILabel!
+    @IBOutlet weak var loaderAnimation: NVActivityIndicatorView!
     
-    
+    private let refreshControl = UIRefreshControl()
     var galleryItemArrayNew = [GalleryItem]()
     var galleryItemArrayPopular = [GalleryItem]()
     var currentPageOfNew = 0
     var currentPageOfPopular = 0
     var pageCountOfNew = 0
     var pageCountOfPopular = 0
-
+    
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-        navigationController?.setNavigationBarHidden(true, animated: false)
+        navigationController?.setNavigationBarHidden(false, animated: false)
     }
     
     override func viewDidLoad() {
         super.viewDidLoad()
-
-            collectionView.dataSource =  self
-            collectionView.delegate = self
-
-            loadData()
-        
-    }
-  @objc func loadData(){
-        //Проверяем соединение с сетью
-        if Connectivity.isConnectedToInternet {
-            print("Connected")
-            showCells()
-            if type == .new{
-                self.newOrPopularTitle.text = "New"
-                if currentPageOfNew <= pageCountOfNew {
-                    currentPageOfNew += 1
-                    print("Loading 'New' started. Page: \(currentPageOfNew) of ")
-                    Alamofire.request("http://gallery.dev.webant.ru/api/photos?new=true&popular=false&page=\(currentPageOfNew)&limit=4").responseData{ response in
-                        let fgalleryItemArray: GalleryResponse = try! JSONDecoder().decode(GalleryResponse.self, from: response.result.value! )
-                        self.galleryItemArrayNew.append(contentsOf: fgalleryItemArray.data.map{ $0 })
-                        self.collectionView.reloadData()
-                        self.pageCountOfNew = fgalleryItemArray.countOfPages
-                        print(self.pageCountOfNew)
-                    }
-                }
-            } else {
-                self.newOrPopularTitle.text = "Popular"
-                if currentPageOfPopular <= pageCountOfPopular {
-                    currentPageOfPopular += 1
-                    print("Loading 'Popular' started. Page: \(currentPageOfPopular) of ")
-                    Alamofire.request("http://gallery.dev.webant.ru/api/photos?new=false&popular=true&page=\(currentPageOfPopular)&limit=4").responseData{ response in
-                        let fgalleryItemArray: GalleryResponse = try! JSONDecoder().decode(GalleryResponse.self, from: response.result.value! )
-                        self.galleryItemArrayPopular.append(contentsOf: fgalleryItemArray.data.map{ $0 })
-                        self.collectionView.reloadData()
-                        self.pageCountOfPopular = fgalleryItemArray.countOfPages
-                        print(self.pageCountOfPopular)
-                    }
-                }
+        navigationItem.title = "New"
+        navigationController?.navigationBar.setBackgroundImage(UIImage(), for: .default)
+        navigationController?.navigationBar.shadowImage = UIImage()
+        navigationController?.navigationBar.isTranslucent = true
+        collectionView.dataSource =  self
+        collectionView.delegate = self
+        refreshControl.addTarget(self, action: #selector(refreshData), for: .valueChanged )
+        refreshControl.alpha = 0
+        collectionView.addSubview(refreshControl)
+        loadData(){DispatchQueue.main.async {
+            if self.chooseArray().count > 0{
+                self.collectionView.reloadData()
             }
-        }else {
-           //here to hide cells
-            hideCells()
-            noConnectionImage.isHidden = false
-            noConnectionTitle.isHidden = false
-            print("No Internet")
-            let _ = Timer.scheduledTimer(timeInterval: 0.5, target: self,
-                                         selector: #selector(loadData),
-                                         userInfo: nil, repeats: false)
+            }}
+    }
+    
+    @objc func loadData(completionHandler: (() ->Void)?){
+        DispatchQueue.global().async {
+            self.isAnimated(animating: true)
+            if Connectivity.isConnectedToInternet {
+                print("Connected")
+                self.showCells()
+                if self.type == .new{
+                    self.navigationItem.title = "New"
+                    if self.currentPageOfNew <= self.pageCountOfNew {
+                        self.currentPageOfNew += 1
+                        print("Loading 'New' started. Page: \(self.currentPageOfNew) of ")
+                        Alamofire.request("http://gallery.dev.webant.ru/api/photos?new=true&popular=false&page=\(self.currentPageOfNew)&limit=4").responseData{ response in
+                            let fgalleryItemArray: GalleryResponse = try! JSONDecoder().decode(GalleryResponse.self, from: response.result.value! )
+                            self.galleryItemArrayNew.append(contentsOf: fgalleryItemArray.data.map{ $0 })
+                            self.collectionView.reloadData()
+                            self.pageCountOfNew = fgalleryItemArray.countOfPages
+                            print(self.pageCountOfNew)
+                            self.isAnimated(animating: false)
+                            completionHandler?()
+                            
+                        }
+                    }
+                } else {
+                    self.navigationItem.title = "Popular"
+                    if self.currentPageOfPopular <= self.pageCountOfPopular {
+                        self.currentPageOfPopular += 1
+                        print("Loading 'Popular' started. Page: \(self.currentPageOfPopular) of ")
+                        Alamofire.request("http://gallery.dev.webant.ru/api/photos?new=false&popular=true&page=\(self.currentPageOfPopular)&limit=4").responseData{ response in
+                            let fgalleryItemArray: GalleryResponse = try! JSONDecoder().decode(GalleryResponse.self, from: response.result.value! )
+                            self.galleryItemArrayPopular.append(contentsOf: fgalleryItemArray.data.map{ $0 })
+                            self.collectionView.reloadData()
+                            self.pageCountOfPopular = fgalleryItemArray.countOfPages
+                            print(self.pageCountOfPopular)
+                            self.isAnimated(animating: false)
+                            completionHandler?()
+                            
+                        }
+                    }
+                }
+            }else {
+                //here to hide cells
+                self.hideCells()
+                self.noConnectionImage.isHidden = false
+                self.noConnectionTitle.isHidden = false
+                print("No Internet")
+                //                DispatchQueue.main.async {
+                //                    let _ = Timer.scheduledTimer(timeInterval: 0.5, target: self,
+                //                                                 selector: #selector(self.loadData),
+                //                                                 userInfo: nil, repeats: false)
+                //                }
+                DispatchQueue.main.asyncAfter(deadline: .now()+0.3, execute: {
+                    self.loadData() {
+                        DispatchQueue.main.async {
+                            self.collectionView.reloadData()
+                        }
+                        
+                    }
+                })
+                completionHandler?()
+            }
         }
     }
-     func chooseArray() -> [GalleryItem] {
+    func chooseArray() -> [GalleryItem] {
         if type == .new {
             return galleryItemArrayNew
         } else {
             return galleryItemArrayPopular
         }
+    }
+    
+    func isAnimated(animating: Bool){
+        if animating {
+            self.loaderAnimation.type = .ballPulseSync
+            self.loaderAnimation.color = #colorLiteral(red: 0.3388642669, green: 0.2968068719, blue: 0.8100987077, alpha: 1)
+            self.loaderAnimation.startAnimating()
+        } else {
+            self.loaderAnimation.stopAnimating()
+        }
+    }
+    
+    @objc func refreshData(){
+        if type == .new{
+            currentPageOfNew = 0
+            pageCountOfNew = 0
+            galleryItemArrayNew = [GalleryItem]()
+        } else {
+            currentPageOfPopular = 0
+            pageCountOfPopular = 0
+            galleryItemArrayPopular = [GalleryItem]()
+        }
+        
+        loadData(){DispatchQueue.main.async {
+            if self.chooseArray().count > 0 {
+                self.collectionView.reloadData()
+            }
+            self.refreshControl.endRefreshing()
+            
+            }}
     }
 }
 
@@ -118,13 +180,16 @@ extension ViewController: UICollectionViewDataSource, UICollectionViewDelegate{
     }
     
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
+        
         return chooseArray().count
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         if let itemCollectionCell = collectionView.dequeueReusableCell(withReuseIdentifier: "itemCell", for: indexPath) as? ItemCollectionViewCell{
-        
-            itemCollectionCell.setup(chooseArray()[indexPath.row])
+            
+            if chooseArray().count > 0 {
+                itemCollectionCell.setup(chooseArray()[indexPath.row])
+            }
             
             itemCollectionCell.layer.cornerRadius = 20.0
             itemCollectionCell.layer.borderWidth = 1.0
@@ -146,10 +211,12 @@ extension ViewController: UICollectionViewDataSource, UICollectionViewDelegate{
 }
 
 extension ViewController: UICollectionViewDelegateFlowLayout, UIScrollViewDelegate {
-
+    
     func collectionView(_ collectionView: UICollectionView, willDisplay cell: UICollectionViewCell, forItemAt indexPath: IndexPath) {
         if indexPath.row == chooseArray().count-1{
-            loadData()
+            loadData(){DispatchQueue.main.async {
+                self.collectionView.reloadData()
+                }}
         }
     }
     
@@ -161,15 +228,14 @@ extension ViewController: UICollectionViewDelegateFlowLayout, UIScrollViewDelega
     }
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, insetForSectionAt section: Int) -> UIEdgeInsets {
-        //return UIEdgeInsets.zero
-        return UIEdgeInsets(top:20, left: 15, bottom: 0, right: 15)
-
+        return UIEdgeInsets(top:0, left: 15, bottom: 0, right: 15)
+        
     }
-
+    
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumInteritemSpacingForSectionAt section: Int) -> CGFloat {
         return 15
     }
-
+    
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumLineSpacingForSectionAt section: Int) -> CGFloat {
         return 15
     }

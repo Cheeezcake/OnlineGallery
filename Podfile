@@ -5,5 +5,5 @@ target 'OnlineGallery' do
 
     pod 'Alamofire', '~> 4.7.2'
     pod 'Kingfisher', '~> 4.10.1'
-
+pod 'NVActivityIndicatorView', '~> 4.4.0'
 end

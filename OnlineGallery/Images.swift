@@ -13,10 +13,6 @@ struct Image: Codable {
     var id: Int
     var contentUrl: String
     
-//    enum CodingKeys: String, CodingKey {
-//        case id
-//        case contentUrl
-//    }
 }
 
 struct GalleryItem: Codable {
@@ -27,29 +23,12 @@ struct GalleryItem: Codable {
     var popular: Bool? = false
     var image: Image
     
-//    enum CodingKeys: String, CodingKey {
-//        case id
-//        case name
-//        case description
-//        case new
-//        case popular
-//        case image
-//
-//    }
-//   init() {
-    
-//    }
 }
 
 struct  GalleryResponse: Codable {
-//    enum CodingKeys: String, CodingKey {
-//        case items
-//    }
     let countOfPages: Int
     let data: [GalleryItem]
-//    init() {
-        
-//    }
+    
 }
 
 struct Connectivity {
