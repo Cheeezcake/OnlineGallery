@@ -31,10 +31,11 @@ class ViewController: UIViewController {
     var pageCountOfNew = 0
     var pageCountOfPopular = 0
     
-    
     override func viewWillAppear(_ animated: Bool) {
-        super.viewWillAppear(animated)
-        setTitle()
+        self.setTitle()
+        
+        super.viewWillAppear(false)
+        self.setTitle()
     }
     
     override func viewDidLoad() {
@@ -116,17 +117,18 @@ class ViewController: UIViewController {
     }
     
     func setTitle(){
-        self.navigationController?.setNavigationBarHidden(false, animated: false)
+        
         self.navigationController?.navigationBar.prefersLargeTitles = true
         self.navigationController?.navigationBar.setBackgroundImage(UIImage(), for: .default)
         self.navigationController?.navigationBar.shadowImage = UIImage()
         self.navigationController?.navigationBar.isTranslucent = true
-        
         if type == .new {
-            self.navigationController?.navigationBar.topItem?.title = "New"
+                self.navigationController?.navigationBar.topItem?.title = "New"
+
         } else {
-            self.navigationController?.navigationBar.topItem?.title = "Popular"
+                self.navigationController?.navigationBar.topItem?.title = "Popular"
         }
+        //self.navigationController?.navigationBar.isHidden = false
     }
     
     @objc func refreshData(){
