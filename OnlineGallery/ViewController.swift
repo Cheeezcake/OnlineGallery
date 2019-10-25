@@ -22,8 +22,6 @@ class ViewController: UIViewController {
     
     @IBOutlet weak var noConnectionImage: UIImageView!
     @IBOutlet weak var noConnectionTitle: UILabel!
-    @IBOutlet weak public var newOrPopularTitle: UILabel!
-    @IBOutlet weak var loaderAnimation: NVActivityIndicatorView!
     
     private let refreshControl = UIRefreshControl()
     var galleryItemArrayNew = [GalleryItem]()
@@ -36,19 +34,14 @@ class ViewController: UIViewController {
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-        navigationController?.setNavigationBarHidden(false, animated: false)
+        setTitle()
     }
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        navigationItem.title = "New"
-        navigationController?.navigationBar.setBackgroundImage(UIImage(), for: .default)
-        navigationController?.navigationBar.shadowImage = UIImage()
-        navigationController?.navigationBar.isTranslucent = true
         collectionView.dataSource =  self
         collectionView.delegate = self
         refreshControl.addTarget(self, action: #selector(refreshData), for: .valueChanged )
-        refreshControl.alpha = 0
         collectionView.addSubview(refreshControl)
         loadData(){DispatchQueue.main.async {
             if self.chooseArray().count > 0{
@@ -59,12 +52,10 @@ class ViewController: UIViewController {
     
     @objc func loadData(completionHandler: (() ->Void)?){
         DispatchQueue.global().async {
-            self.isAnimated(animating: true)
             if Connectivity.isConnectedToInternet {
                 print("Connected")
                 self.showCells()
                 if self.type == .new{
-                    self.navigationItem.title = "New"
                     if self.currentPageOfNew <= self.pageCountOfNew {
                         self.currentPageOfNew += 1
                         print("Loading 'New' started. Page: \(self.currentPageOfNew) of ")
@@ -74,13 +65,11 @@ class ViewController: UIViewController {
                             self.collectionView.reloadData()
                             self.pageCountOfNew = fgalleryItemArray.countOfPages
                             print(self.pageCountOfNew)
-                            self.isAnimated(animating: false)
                             completionHandler?()
                             
                         }
                     }
                 } else {
-                    self.navigationItem.title = "Popular"
                     if self.currentPageOfPopular <= self.pageCountOfPopular {
                         self.currentPageOfPopular += 1
                         print("Loading 'Popular' started. Page: \(self.currentPageOfPopular) of ")
@@ -90,7 +79,6 @@ class ViewController: UIViewController {
                             self.collectionView.reloadData()
                             self.pageCountOfPopular = fgalleryItemArray.countOfPages
                             print(self.pageCountOfPopular)
-                            self.isAnimated(animating: false)
                             completionHandler?()
                             
                         }
@@ -127,13 +115,17 @@ class ViewController: UIViewController {
         }
     }
     
-    func isAnimated(animating: Bool){
-        if animating {
-            self.loaderAnimation.type = .ballPulseSync
-            self.loaderAnimation.color = #colorLiteral(red: 0.3388642669, green: 0.2968068719, blue: 0.8100987077, alpha: 1)
-            self.loaderAnimation.startAnimating()
+    func setTitle(){
+        self.navigationController?.setNavigationBarHidden(false, animated: false)
+        self.navigationController?.navigationBar.prefersLargeTitles = true
+        self.navigationController?.navigationBar.setBackgroundImage(UIImage(), for: .default)
+        self.navigationController?.navigationBar.shadowImage = UIImage()
+        self.navigationController?.navigationBar.isTranslucent = true
+        
+        if type == .new {
+            self.navigationController?.navigationBar.topItem?.title = "New"
         } else {
-            self.loaderAnimation.stopAnimating()
+            self.navigationController?.navigationBar.topItem?.title = "Popular"
         }
     }
     

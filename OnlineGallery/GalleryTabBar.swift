@@ -21,7 +21,7 @@ class GalleryTabBar: UITabBarController, UITabBarControllerDelegate {
         
         // First NavigationController
         guard let firstNC = self.children[0] as? UINavigationController else {
-            fatalError("В расскадровке у таббара отсутствует связь с navigationController")
+            fatalError("В раскадровке у таббара отсутствует связь с navigationController")
         }
         // First ViewController "New"
         let newVC = storyboard.instantiateViewController(withIdentifier: "viewController") as? ViewController
@@ -32,7 +32,7 @@ class GalleryTabBar: UITabBarController, UITabBarControllerDelegate {
         
         // Second NavigationController
         guard let secondNC = self.children[1] as? UINavigationController else {
-            fatalError("В расскадровке у таббара отсутствует связь с navigationController")
+            fatalError("В раскадровке у таббара отсутствует связь с navigationController")
         }
         // Second ViewController "Popular"
         let popularVC = storyboard.instantiateViewController(withIdentifier: "viewController") as? ViewController

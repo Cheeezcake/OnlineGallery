@@ -25,7 +25,12 @@ class DetailViewController: UIViewController {
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
        
-        navigationController?.setNavigationBarHidden(false, animated: true)
+        self.navigationController?.setNavigationBarHidden(false, animated: true)
+        self.navigationController?.navigationBar.topItem?.title = ""
+        self.navigationController?.navigationBar.prefersLargeTitles = false
+        self.navigationController?.navigationBar.setBackgroundImage(UIImage(), for: .default)
+        self.navigationController?.navigationBar.shadowImage = UIImage()
+        self.navigationController?.navigationBar.isTranslucent = true
         
     }
     
