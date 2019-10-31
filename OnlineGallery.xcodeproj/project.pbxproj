@@ -18,6 +18,7 @@
 		0977F2442359FC29000E29CE /* GalleryTabBar.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0977F2432359FC29000E29CE /* GalleryTabBar.swift */; };
 		09815DD1233E2ACE008198AF /* Images.swift in Sources */ = {isa = PBXBuildFile; fileRef = 09815DD0233E2ACE008198AF /* Images.swift */; };
 		09815DD3233E452C008198AF /* ItemCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 09815DD2233E452C008198AF /* ItemCollectionViewCell.swift */; };
+		0988730F236B354A0083A645 /* LoadingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0988730E236B354A0083A645 /* LoadingView.swift */; };
 		09F39187235788D50045D194 /* DetailViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 09F39186235788D50045D194 /* DetailViewController.swift */; };
 		41E5D5FC257DA20422AC6945 /* Pods_OnlineGallery.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5C0858E4D2A199F2E9D9F806 /* Pods_OnlineGallery.framework */; };
 /* End PBXBuildFile section */
@@ -57,6 +58,7 @@
 		0977F2432359FC29000E29CE /* GalleryTabBar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GalleryTabBar.swift; sourceTree = "<group>"; };
 		09815DD0233E2ACE008198AF /* Images.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Images.swift; sourceTree = "<group>"; };
 		09815DD2233E452C008198AF /* ItemCollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ItemCollectionViewCell.swift; sourceTree = "<group>"; };
+		0988730E236B354A0083A645 /* LoadingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoadingView.swift; sourceTree = "<group>"; };
 		09F39186235788D50045D194 /* DetailViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DetailViewController.swift; sourceTree = "<group>"; };
 		40DBC8F2410AE3FC7F549AD7 /* Pods-OnlineGallery.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-OnlineGallery.debug.xcconfig"; path = "Target Support Files/Pods-OnlineGallery/Pods-OnlineGallery.debug.xcconfig"; sourceTree = "<group>"; };
 		5C0858E4D2A199F2E9D9F806 /* Pods_OnlineGallery.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_OnlineGallery.framework; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -117,6 +119,7 @@
 			children = (
 				095088AD233D0B2E00F904B6 /* AppDelegate.swift */,
 				095088AF233D0B2E00F904B6 /* ViewController.swift */,
+				0988730E236B354A0083A645 /* LoadingView.swift */,
 				09F39186235788D50045D194 /* DetailViewController.swift */,
 				0977F2432359FC29000E29CE /* GalleryTabBar.swift */,
 				095088B1233D0B2E00F904B6 /* Main.storyboard */,
@@ -345,6 +348,7 @@
 				09815DD3233E452C008198AF /* ItemCollectionViewCell.swift in Sources */,
 				09815DD1233E2ACE008198AF /* Images.swift in Sources */,
 				0977F2442359FC29000E29CE /* GalleryTabBar.swift in Sources */,
+				0988730F236B354A0083A645 /* LoadingView.swift in Sources */,
 				095088AE233D0B2E00F904B6 /* AppDelegate.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

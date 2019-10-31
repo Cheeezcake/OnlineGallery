@@ -16,12 +16,12 @@ class ItemCollectionViewCell: UICollectionViewCell {
     var gallery: GalleryItem?
     
     func setup(_ item: GalleryItem!) {
-        let processor = CroppingImageProcessor(size: CGSize(width: 500, height: 400), anchor: CGPoint(x: 0.5, y: 0.5))
+       // let processor = CroppingImageProcessor(size: CGSize(width: 500, height: 400), anchor: CGPoint(x: 0.5, y: 0.5))
         imageView.kf.indicatorType = .activity
         self.imageView.kf.setImage(with: URL(string: "http://gallery.dev.webant.ru/media/\(item!.image.contentUrl)")!,
                                    placeholder: UIImage(named: "placeholderImage"),
                                    options: [
-                                    .processor(processor),
+         //                           .processor(processor),
                                     .scaleFactor(UIScreen.main.scale),
                                     .transition(.fade(1)),
                                     .cacheOriginalImage

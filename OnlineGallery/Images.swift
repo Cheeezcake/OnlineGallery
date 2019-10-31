@@ -38,3 +38,8 @@ struct Connectivity {
     }
 }
 
+protocol Loadable {
+    func showLoadingView()
+    func hideLoadingView()
+}
+

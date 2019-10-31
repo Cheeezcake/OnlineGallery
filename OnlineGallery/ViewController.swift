@@ -18,6 +18,11 @@ enum SourceType {
     case popular
 }
 
+fileprivate struct Constants {
+    /// an arbitrary tag id for the loading view, so it can be retrieved later without keeping a reference to it
+    fileprivate static let loadingViewTag = 1234
+}
+
 class ViewController: UIViewController {
     
     @IBOutlet weak var collectionView: UICollectionView!
@@ -155,7 +160,7 @@ class ViewController: UIViewController {
     }
 }
 
-extension ViewController: UICollectionViewDataSource, UICollectionViewDelegate{
+extension ViewController: UICollectionViewDataSource, UICollectionViewDelegate, Loadable{
     
     func hideCells(){
         collectionView.isHidden = true
@@ -174,31 +179,35 @@ extension ViewController: UICollectionViewDataSource, UICollectionViewDelegate{
     func openDetailVC(at index: Int) {
         let storyboard = UIStoryboard(name: "Main", bundle: nil)
         let vc = storyboard.instantiateViewController(withIdentifier: "detailVC") as? DetailViewController
-//        let disposeBag = DisposeBag()
+        //        let disposeBag = DisposeBag()
         let stringURL = "http://gallery.dev.webant.ru/media/\(chooseArray()[index].image.contentUrl)"
         var image = UIImage()
-
-// тут что-то качается...
-_ = data(.get, stringURL)
-    .debug()
-    .observeOn(MainScheduler.instance)
-//            .subscribe {
-//                print($0)}
-    .subscribe(onNext: { data in
-            // Update Image
-            image = UIImage(data: data)!
-            print(data)
-    }, onError: { error in
+        self.view.isUserInteractionEnabled = false
+        self.showLoadingView()
+        // тут что-то качается...
+        _ = data(.get, stringURL)
+            .debug()
+            .observeOn(MainScheduler.instance)
+            //            .subscribe {
+            //                print($0)}
+            .subscribe(onNext: { data in
+                // Update Image
+                image = UIImage(data: data)!
+                vc?.image = image
+                print(data)
+            }, onError: { error in
                 print(error)
-                },
-            onCompleted:{
+            },
+               onCompleted:{
                 print("Completed")
-               // self.navigationController?.pushViewController(vc!, animated: true)
-                self.hideCells()
-                self.noConnectionImage.image = image
-        })
- //       .disposed(by: disposeBag)
-//
+                self.navigationController?.pushViewController(vc!, animated: true)
+                self.hideLoadingView()
+                self.view.isUserInteractionEnabled = true
+                //self.hideCells()
+                //self.noConnectionImage.image = image
+            })
+        //       .disposed(by: disposeBag)
+        //
         vc?.detImage = chooseArray()[index]
         vc?.image = image
         //self.navigationController?.pushViewController(vc!, animated: true)
@@ -266,3 +275,27 @@ extension ViewController: UICollectionViewDelegateFlowLayout, UIScrollViewDelega
     }
 }
 
+extension Loadable where Self: UIViewController {
+    
+    func showLoadingView() {
+        let loadingView = LoadingView()
+        view.addSubview(loadingView)
+        
+        loadingView.translatesAutoresizingMaskIntoConstraints = false
+        loadingView.widthAnchor.constraint(equalToConstant: 100).isActive = true
+        loadingView.heightAnchor.constraint(equalToConstant: 100).isActive = true
+        loadingView.centerXAnchor.constraint(equalTo: view.centerXAnchor).isActive = true
+        loadingView.centerYAnchor.constraint(equalTo: view.centerYAnchor).isActive = true
+        loadingView.animate()
+        
+        loadingView.tag = Constants.loadingViewTag
+    }
+    
+    func hideLoadingView() {
+        view.subviews.forEach { subview in
+            if subview.tag == Constants.loadingViewTag {
+                subview.removeFromSuperview()
+            }
+        }
+    }
+}
