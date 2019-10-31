@@ -502,15 +502,13 @@ public final class NVActivityIndicatorView: UIView {
         guard !isAnimating else {
             return
         }
-        DispatchQueue.main.async{
-        self.isHidden = false
-        self.isAnimating = true
-        self.layer.speed = 1
-        self.setUpAnimation()
-        }
+        isHidden = false
+        isAnimating = true
+        layer.speed = 1
+        setUpAnimation()
     }
 
-    /**
+    /**
      Stop animating.
      */
     public final func stopAnimating() {

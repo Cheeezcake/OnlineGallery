@@ -3,7 +3,10 @@ use_frameworks!
 
 target 'OnlineGallery' do
 
-    pod 'Alamofire', '~> 4.7.2'
-    pod 'Kingfisher', '~> 4.10.1'
-pod 'NVActivityIndicatorView', '~> 4.4.0'
+    pod 'Alamofire'
+    pod 'Kingfisher'
+    pod 'NVActivityIndicatorView'
+    pod 'RxAlamofire'
+    pod 'RxSwift'
+    pod 'RxKingfisher'
 end

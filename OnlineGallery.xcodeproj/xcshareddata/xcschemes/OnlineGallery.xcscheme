@@ -20,6 +20,34 @@
                ReferencedContainer = "container:OnlineGallery.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
+         <BuildActionEntry
+            buildForTesting = "NO"
+            buildForRunning = "NO"
+            buildForProfiling = "NO"
+            buildForArchiving = "NO"
+            buildForAnalyzing = "NO">
+            <BuildableReference
+               BuildableIdentifier = "primary"
+               BlueprintIdentifier = "095088BD233D0B2F00F904B6"
+               BuildableName = "OnlineGalleryTests.xctest"
+               BlueprintName = "OnlineGalleryTests"
+               ReferencedContainer = "container:OnlineGallery.xcodeproj">
+            </BuildableReference>
+         </BuildActionEntry>
+         <BuildActionEntry
+            buildForTesting = "NO"
+            buildForRunning = "NO"
+            buildForProfiling = "NO"
+            buildForArchiving = "NO"
+            buildForAnalyzing = "NO">
+            <BuildableReference
+               BuildableIdentifier = "primary"
+               BlueprintIdentifier = "095088C8233D0B2F00F904B6"
+               BuildableName = "OnlineGalleryUITests.xctest"
+               BlueprintName = "OnlineGalleryUITests"
+               ReferencedContainer = "container:OnlineGallery.xcodeproj">
+            </BuildableReference>
+         </BuildActionEntry>
       </BuildActionEntries>
    </BuildAction>
    <TestAction
@@ -28,26 +56,6 @@
       selectedLauncherIdentifier = "Xcode.DebuggerFoundation.Launcher.LLDB"
       shouldUseLaunchSchemeArgsEnv = "YES">
       <Testables>
-         <TestableReference
-            skipped = "NO">
-            <BuildableReference
-               BuildableIdentifier = "primary"
-               BlueprintIdentifier = "095088BD233D0B2F00F904B6"
-               BuildableName = "OnlineGalleryTests.xctest"
-               BlueprintName = "OnlineGalleryTests"
-               ReferencedContainer = "container:OnlineGallery.xcodeproj">
-            </BuildableReference>
-         </TestableReference>
-         <TestableReference
-            skipped = "NO">
-            <BuildableReference
-               BuildableIdentifier = "primary"
-               BlueprintIdentifier = "095088C8233D0B2F00F904B6"
-               BuildableName = "OnlineGalleryUITests.xctest"
-               BlueprintName = "OnlineGalleryUITests"
-               ReferencedContainer = "container:OnlineGallery.xcodeproj">
-            </BuildableReference>
-         </TestableReference>
       </Testables>
       <MacroExpansion>
          <BuildableReference

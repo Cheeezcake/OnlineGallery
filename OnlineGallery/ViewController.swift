@@ -9,6 +9,9 @@
 import UIKit
 import Alamofire
 import NVActivityIndicatorView
+import RxSwift
+import RxAlamofire
+import RxKingfisher
 
 enum SourceType {
     case new
@@ -159,7 +162,9 @@ extension ViewController: UICollectionViewDataSource, UICollectionViewDelegate{
     }
     
     func showCells(){
-        collectionView.isHidden = false
+        DispatchQueue.main.async {
+            self.collectionView.isHidden = false
+        }
     }
     
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
@@ -169,8 +174,34 @@ extension ViewController: UICollectionViewDataSource, UICollectionViewDelegate{
     func openDetailVC(at index: Int) {
         let storyboard = UIStoryboard(name: "Main", bundle: nil)
         let vc = storyboard.instantiateViewController(withIdentifier: "detailVC") as? DetailViewController
+//        let disposeBag = DisposeBag()
+        let stringURL = "http://gallery.dev.webant.ru/media/\(chooseArray()[index].image.contentUrl)"
+        var image = UIImage()
+
+// тут что-то качается...
+_ = data(.get, stringURL)
+    .debug()
+    .observeOn(MainScheduler.instance)
+//            .subscribe {
+//                print($0)}
+    .subscribe(onNext: { data in
+            // Update Image
+            image = UIImage(data: data)!
+            print(data)
+    }, onError: { error in
+                print(error)
+                },
+            onCompleted:{
+                print("Completed")
+               // self.navigationController?.pushViewController(vc!, animated: true)
+                self.hideCells()
+                self.noConnectionImage.image = image
+        })
+ //       .disposed(by: disposeBag)
+//
         vc?.detImage = chooseArray()[index]
-        self.navigationController?.pushViewController(vc!, animated: true)
+        vc?.image = image
+        //self.navigationController?.pushViewController(vc!, animated: true)
     }
     
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {

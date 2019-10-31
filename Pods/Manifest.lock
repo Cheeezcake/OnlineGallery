@@ -4,23 +4,46 @@ PODS:
   - NVActivityIndicatorView (4.4.1):
     - NVActivityIndicatorView/Presenter (= 4.4.1)
   - NVActivityIndicatorView/Presenter (4.4.1)
+  - RxAlamofire (4.3.0):
+    - RxAlamofire/Core (= 4.3.0)
+  - RxAlamofire/Core (4.3.0):
+    - Alamofire (~> 4.5)
+    - RxSwift (~> 4)
+  - RxCocoa (4.5.0):
+    - RxSwift (>= 4.4.2, ~> 4.4)
+  - RxKingfisher (0.3.1):
+    - Kingfisher (~> 4)
+    - RxCocoa (~> 4.3)
+    - RxSwift (~> 4.3)
+  - RxSwift (4.5.0)
 
 DEPENDENCIES:
-  - Alamofire (~> 4.7.2)
-  - Kingfisher (~> 4.10.1)
-  - NVActivityIndicatorView (~> 4.4.0)
+  - Alamofire
+  - Kingfisher
+  - NVActivityIndicatorView
+  - RxAlamofire
+  - RxKingfisher
+  - RxSwift
 
 SPEC REPOS:
   trunk:
     - Alamofire
     - Kingfisher
     - NVActivityIndicatorView
+    - RxAlamofire
+    - RxCocoa
+    - RxKingfisher
+    - RxSwift
 
 SPEC CHECKSUMS:
   Alamofire: c7287b6e5d7da964a70935e5db17046b7fde6568
   Kingfisher: c148cd7b47ebde9989f6bc7c27dcaa79d81279a0
   NVActivityIndicatorView: f0a6b0ed2973d9544da268f4eb76696f0a9577b0
+  RxAlamofire: 09624d0f2d48ed8b686e4eb4cf68e28cbd2df556
+  RxCocoa: cbf70265dc65a981d4ac982e513c10cf23df24a0
+  RxKingfisher: d79612e7a6cab0b67d6e9b63fc1572fccc825afb
+  RxSwift: f172070dfd1a93d70a9ab97a5a01166206e1c575
 
-PODFILE CHECKSUM: c1476d831e873728ab6f0b1dd8caf1cfc1c4aa2c
+PODFILE CHECKSUM: e1679abf6526e9db942c2c68da73db0278276996
 
 COCOAPODS: 1.8.0
