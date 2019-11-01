@@ -39,10 +39,10 @@ class ViewController: UIViewController {
     var pageCountOfNew = 0
     var pageCountOfPopular = 0
     
-    override func viewWillAppear(_ animated: Bool) {
+    override func viewDidAppear(_ animated: Bool) {
         self.setTitle()
         
-        super.viewWillAppear(false)
+        super.viewDidAppear(false)
         self.setTitle()
     }
     
@@ -125,11 +125,10 @@ class ViewController: UIViewController {
     }
     
     func setTitle(){
-        
-        self.navigationController?.navigationBar.prefersLargeTitles = true
-        self.navigationController?.navigationBar.setBackgroundImage(UIImage(), for: .default)
-        self.navigationController?.navigationBar.shadowImage = UIImage()
-        self.navigationController?.navigationBar.isTranslucent = true
+   //     self.navigationController?.navigationBar.prefersLargeTitles = true
+   //     self.navigationController?.navigationBar.setBackgroundImage(UIImage(), for: .default)
+   //     self.navigationController?.navigationBar.shadowImage = UIImage()
+   //     self.navigationController?.navigationBar.isTranslucent = true
         if type == .new {
                 self.navigationController?.navigationBar.topItem?.title = "New"
 
@@ -182,7 +181,6 @@ extension ViewController: UICollectionViewDataSource, UICollectionViewDelegate, 
         //        let disposeBag = DisposeBag()
         let stringURL = "http://gallery.dev.webant.ru/media/\(chooseArray()[index].image.contentUrl)"
         var image = UIImage()
-        self.view.isUserInteractionEnabled = false
         self.showLoadingView()
         // тут что-то качается...
         _ = data(.get, stringURL)
@@ -202,7 +200,6 @@ extension ViewController: UICollectionViewDataSource, UICollectionViewDelegate, 
                 print("Completed")
                 self.navigationController?.pushViewController(vc!, animated: true)
                 self.hideLoadingView()
-                self.view.isUserInteractionEnabled = true
                 //self.hideCells()
                 //self.noConnectionImage.image = image
             })
@@ -278,6 +275,7 @@ extension ViewController: UICollectionViewDelegateFlowLayout, UIScrollViewDelega
 extension Loadable where Self: UIViewController {
     
     func showLoadingView() {
+        self.view.isUserInteractionEnabled = false
         let loadingView = LoadingView()
         view.addSubview(loadingView)
         
@@ -292,6 +290,7 @@ extension Loadable where Self: UIViewController {
     }
     
     func hideLoadingView() {
+        self.view.isUserInteractionEnabled = true
         view.subviews.forEach { subview in
             if subview.tag == Constants.loadingViewTag {
                 subview.removeFromSuperview()

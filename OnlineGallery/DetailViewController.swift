@@ -42,7 +42,7 @@ class DetailViewController: UIViewController {
         self.detImageView.image = image
        // let data = ImageResource(downloadURL: URL(string: "http://gallery.dev.webant.ru/media/\(detImage!.image.contentUrl)")!)
         
-        self.navigationController?.navigationBar.prefersLargeTitles = false
+       // self.navigationController?.navigationBar.prefersLargeTitles = false
         detImageView.kf.indicatorType = .activity
 
 //        self.detImageView.kf.setImage(with: URL(string: "http://gallery.dev.webant.ru/media/\(detImage!.image.contentUrl)")!,
@@ -63,10 +63,10 @@ class DetailViewController: UIViewController {
     
     func setTitle() {
        // self.navigationController?.navigationBar.topItem?.title = ""
-        self.navigationController?.navigationBar.prefersLargeTitles = true
-        self.navigationController?.navigationBar.setBackgroundImage(UIImage(), for: .default)
-        self.navigationController?.navigationBar.shadowImage = UIImage()
-        self.navigationController?.navigationBar.isTranslucent = true
+       // self.navigationController?.navigationBar.prefersLargeTitles = true
+//        self.navigationController?.navigationBar.setBackgroundImage(UIImage(), for: .default)
+//        self.navigationController?.navigationBar.shadowImage = UIImage()
+//        self.navigationController?.navigationBar.isTranslucent = true
         self.navigationController?.navigationBar.topItem?.title = " "
     }
     
