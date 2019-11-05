@@ -10,7 +10,6 @@ import UIKit
 
 class GalleryTabBar: UITabBarController, UITabBarControllerDelegate {
     
-
     override func viewDidLoad() {
         super.viewDidLoad()
         
@@ -27,7 +26,6 @@ class GalleryTabBar: UITabBarController, UITabBarControllerDelegate {
         let newVC = storyboard.instantiateViewController(withIdentifier: "viewController") as? ViewController
         newVC?.type = .new
         firstNC.pushViewController(newVC!, animated: false)
-        // newVC?.tabBarItem.title = "New"
         
         
         // Second NavigationController
@@ -37,9 +35,7 @@ class GalleryTabBar: UITabBarController, UITabBarControllerDelegate {
         // Second ViewController "Popular"
         let popularVC = storyboard.instantiateViewController(withIdentifier: "viewController") as? ViewController
         popularVC?.type = .popular
-        // popularVC?.tabBarItem.title = "Popular"
         secondNC.pushViewController(popularVC!, animated: false)
-        
     }
 }
 

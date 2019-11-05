@@ -16,16 +16,25 @@ class ItemCollectionViewCell: UICollectionViewCell {
     var gallery: GalleryItem?
     
     func setup(_ item: GalleryItem!) {
-       // let processor = CroppingImageProcessor(size: CGSize(width: 500, height: 400), anchor: CGPoint(x: 0.5, y: 0.5))
         imageView.kf.indicatorType = .activity
         self.imageView.kf.setImage(with: URL(string: "http://gallery.dev.webant.ru/media/\(item!.image.contentUrl)")!,
                                    placeholder: UIImage(named: "placeholderImage"),
                                    options: [
-         //                           .processor(processor),
                                     .scaleFactor(UIScreen.main.scale),
                                     .transition(.fade(1)),
                                     .cacheOriginalImage
             ])
+        self.layer.cornerRadius = 5.0
+        self.layer.borderWidth = 0.5
+        self.layer.borderColor = UIColor.white.cgColor
+        self.layer.masksToBounds = true
+        self.layer.shadowColor = UIColor.lightGray.cgColor
+        self.layer.shadowOffset = CGSize(width: 0, height: 2.0)
+        self.layer.shadowRadius = 5.0
+        self.layer.shadowOpacity = 0.5
+        self.layer.masksToBounds = false
+        self.layer.shadowPath = UIBezierPath(roundedRect: self.bounds, cornerRadius: self.layer.cornerRadius).cgPath
+        self.layer.backgroundColor = UIColor.clear.cgColor
     }
 }
 
@@ -60,6 +69,5 @@ extension UIView {
             layer.borderColor = borderColor?.cgColor
         }
     }
-    
 }
 

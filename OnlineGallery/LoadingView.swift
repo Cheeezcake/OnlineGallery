@@ -20,7 +20,6 @@ final class LoadingView: UIView {
         
         if activityIndicatorView.superview == nil {
             addSubview(activityIndicatorView)
-            
             activityIndicatorView.translatesAutoresizingMaskIntoConstraints = false
             activityIndicatorView.centerXAnchor.constraint(equalTo: centerXAnchor).isActive = true
             activityIndicatorView.centerYAnchor.constraint(equalTo: centerYAnchor).isActive = true

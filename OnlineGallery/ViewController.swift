@@ -41,9 +41,7 @@ class ViewController: UIViewController {
     
     override func viewDidAppear(_ animated: Bool) {
         self.setTitle()
-        
         super.viewDidAppear(false)
-        self.setTitle()
     }
     
     override func viewDidLoad() {
@@ -52,11 +50,13 @@ class ViewController: UIViewController {
         collectionView.delegate = self
         refreshControl.addTarget(self, action: #selector(refreshData), for: .valueChanged )
         collectionView.addSubview(refreshControl)
-        loadData(){DispatchQueue.main.async {
-            if self.chooseArray().count > 0{
-                self.collectionView.reloadData()
+        loadData(){
+            DispatchQueue.main.async {
+                if self.chooseArray().count > 0{
+                    self.collectionView.reloadData()
+                }
             }
-            }}
+        }
     }
     
     @objc func loadData(completionHandler: (() ->Void)?){
@@ -73,10 +73,9 @@ class ViewController: UIViewController {
                             self.galleryItemArrayNew.append(contentsOf: fgalleryItemArray.data.map{ $0 })
                             self.collectionView.reloadData()
                             self.pageCountOfNew = fgalleryItemArray.countOfPages
-                            print(self.pageCountOfNew)
                             completionHandler?()
-                            
                         }
+                        print(self.pageCountOfNew)
                     }
                 } else {
                     if self.currentPageOfPopular <= self.pageCountOfPopular {
@@ -87,10 +86,9 @@ class ViewController: UIViewController {
                             self.galleryItemArrayPopular.append(contentsOf: fgalleryItemArray.data.map{ $0 })
                             self.collectionView.reloadData()
                             self.pageCountOfPopular = fgalleryItemArray.countOfPages
-                            print(self.pageCountOfPopular)
                             completionHandler?()
-                            
                         }
+                        print(self.pageCountOfPopular)
                     }
                 }
             }else {
@@ -99,23 +97,18 @@ class ViewController: UIViewController {
                 self.noConnectionImage.isHidden = false
                 self.noConnectionTitle.isHidden = false
                 print("No Internet")
-                //                DispatchQueue.main.async {
-                //                    let _ = Timer.scheduledTimer(timeInterval: 0.5, target: self,
-                //                                                 selector: #selector(self.loadData),
-                //                                                 userInfo: nil, repeats: false)
-                //                }
                 DispatchQueue.main.asyncAfter(deadline: .now()+0.3, execute: {
                     self.loadData() {
                         DispatchQueue.main.async {
                             self.collectionView.reloadData()
                         }
-                        
                     }
                 })
                 completionHandler?()
             }
         }
     }
+    
     func chooseArray() -> [GalleryItem] {
         if type == .new {
             return galleryItemArrayNew
@@ -125,17 +118,12 @@ class ViewController: UIViewController {
     }
     
     func setTitle(){
-   //     self.navigationController?.navigationBar.prefersLargeTitles = true
-   //     self.navigationController?.navigationBar.setBackgroundImage(UIImage(), for: .default)
-   //     self.navigationController?.navigationBar.shadowImage = UIImage()
-   //     self.navigationController?.navigationBar.isTranslucent = true
         if type == .new {
                 self.navigationController?.navigationBar.topItem?.title = "New"
 
         } else {
                 self.navigationController?.navigationBar.topItem?.title = "Popular"
         }
-        //self.navigationController?.navigationBar.isHidden = false
     }
     
     @objc func refreshData(){
@@ -178,18 +166,14 @@ extension ViewController: UICollectionViewDataSource, UICollectionViewDelegate, 
     func openDetailVC(at index: Int) {
         let storyboard = UIStoryboard(name: "Main", bundle: nil)
         let vc = storyboard.instantiateViewController(withIdentifier: "detailVC") as? DetailViewController
-        //        let disposeBag = DisposeBag()
+        vc?.detImage = chooseArray()[index]
         let stringURL = "http://gallery.dev.webant.ru/media/\(chooseArray()[index].image.contentUrl)"
         var image = UIImage()
         self.showLoadingView()
-        // тут что-то качается...
         _ = data(.get, stringURL)
             .debug()
             .observeOn(MainScheduler.instance)
-            //            .subscribe {
-            //                print($0)}
             .subscribe(onNext: { data in
-                // Update Image
                 image = UIImage(data: data)!
                 vc?.image = image
                 print(data)
@@ -200,14 +184,7 @@ extension ViewController: UICollectionViewDataSource, UICollectionViewDelegate, 
                 print("Completed")
                 self.navigationController?.pushViewController(vc!, animated: true)
                 self.hideLoadingView()
-                //self.hideCells()
-                //self.noConnectionImage.image = image
             })
-        //       .disposed(by: disposeBag)
-        //
-        vc?.detImage = chooseArray()[index]
-        vc?.image = image
-        //self.navigationController?.pushViewController(vc!, animated: true)
     }
     
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
@@ -221,20 +198,6 @@ extension ViewController: UICollectionViewDataSource, UICollectionViewDelegate, 
             if chooseArray().count > 0 {
                 itemCollectionCell.setup(chooseArray()[indexPath.row])
             }
-            
-            itemCollectionCell.layer.cornerRadius = 20.0
-            itemCollectionCell.layer.borderWidth = 1.0
-            itemCollectionCell.layer.borderColor = UIColor.clear.cgColor
-            itemCollectionCell.layer.masksToBounds = true
-            
-            itemCollectionCell.layer.shadowColor = UIColor.lightGray.cgColor
-            itemCollectionCell.layer.shadowOffset = CGSize(width: 0, height: 2.0)
-            itemCollectionCell.layer.shadowRadius = 3.0
-            itemCollectionCell.layer.shadowOpacity = 0.5
-            itemCollectionCell.layer.masksToBounds = false
-            itemCollectionCell.layer.shadowPath = UIBezierPath(roundedRect: itemCollectionCell.bounds, cornerRadius: itemCollectionCell.layer.cornerRadius).cgPath
-            itemCollectionCell.layer.backgroundColor = UIColor.clear.cgColor
-            
             return itemCollectionCell
         }
         return UICollectionViewCell()
