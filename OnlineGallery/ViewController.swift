@@ -272,7 +272,11 @@ extension ViewController: UICollectionViewDelegateFlowLayout, UIScrollViewDelega
 extension Loadable where Self: UIViewController {
     
     func showLoadingView() {
+        if let items = tabBarController?.tabBar.items {
+            items.forEach { $0.isEnabled = false }
+        }
         self.view.isUserInteractionEnabled = false
+        self.tabBarItem.isEnabled = false
         let loadingView = LoadingView()
         view.addSubview(loadingView)
         
@@ -287,6 +291,9 @@ extension Loadable where Self: UIViewController {
     }
     
     func hideLoadingView() {
+        if let items = tabBarController?.tabBar.items {
+            items.forEach { $0.isEnabled = true }
+        }
         self.view.isUserInteractionEnabled = true
         view.subviews.forEach { subview in
             if subview.tag == Constants.loadingViewTag {
