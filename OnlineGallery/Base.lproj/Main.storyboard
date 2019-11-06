@@ -13,7 +13,7 @@
         <!--New-->
         <scene sceneID="A84-cQ-8FS">
             <objects>
-                <navigationController id="YAd-6B-dMW" sceneMemberID="viewController">
+                <navigationController modalTransitionStyle="crossDissolve" id="YAd-6B-dMW" sceneMemberID="viewController">
                     <tabBarItem key="tabBarItem" title="New" image="TodayIcon" landscapeImage="TodayIcon" largeContentSizeImage="TodayIcon" selectedImage="TodayIcon" id="2IQ-rQ-5OQ">
                         <userDefinedRuntimeAttributes>
                             <userDefinedRuntimeAttribute type="color" keyPath="tintColor">
@@ -40,6 +40,9 @@
                             </userDefinedRuntimeAttribute>
                         </userDefinedRuntimeAttributes>
                     </navigationBar>
+                    <userDefinedRuntimeAttributes>
+                        <userDefinedRuntimeAttribute type="boolean" keyPath="isHeroEnabled" value="YES"/>
+                    </userDefinedRuntimeAttributes>
                 </navigationController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="szE-lc-l9P" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
@@ -48,7 +51,7 @@
         <!--Detail View Controller-->
         <scene sceneID="CPs-Ck-yyV">
             <objects>
-                <viewController storyboardIdentifier="detailVC" id="s3Z-NK-PVd" customClass="DetailViewController" customModule="OnlineGallery" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="detailVC" modalTransitionStyle="crossDissolve" id="s3Z-NK-PVd" customClass="DetailViewController" customModule="OnlineGallery" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" restorationIdentifier="DetailedViewController" id="hGY-qd-FnL">
                         <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
@@ -130,7 +133,7 @@
         <!--Popular-->
         <scene sceneID="dQZ-0B-Jz3">
             <objects>
-                <navigationController automaticallyAdjustsScrollViewInsets="NO" id="E8y-UK-tcc" sceneMemberID="viewController">
+                <navigationController automaticallyAdjustsScrollViewInsets="NO" modalTransitionStyle="crossDissolve" id="E8y-UK-tcc" sceneMemberID="viewController">
                     <tabBarItem key="tabBarItem" title="Popular" image="TodayIcon" landscapeImage="TodayIcon" largeContentSizeImage="TodayIcon" selectedImage="TodayIcon" id="iSb-gD-eRM">
                         <userDefinedRuntimeAttributes>
                             <userDefinedRuntimeAttribute type="color" keyPath="tintColor">
@@ -153,6 +156,9 @@
                         </textAttributes>
                     </navigationBar>
                     <nil name="viewControllers"/>
+                    <userDefinedRuntimeAttributes>
+                        <userDefinedRuntimeAttribute type="boolean" keyPath="isHeroEnabled" value="YES"/>
+                    </userDefinedRuntimeAttributes>
                 </navigationController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="j5A-an-v37" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
@@ -188,7 +194,7 @@
         <!--Item-->
         <scene sceneID="J5f-rw-qqc">
             <objects>
-                <viewController storyboardIdentifier="viewController" automaticallyAdjustsScrollViewInsets="NO" id="SQb-iv-8Qu" customClass="ViewController" customModule="OnlineGallery" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="viewController" automaticallyAdjustsScrollViewInsets="NO" modalTransitionStyle="crossDissolve" id="SQb-iv-8Qu" customClass="ViewController" customModule="OnlineGallery" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="r5Q-NF-mQ7">
                         <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
@@ -201,6 +207,10 @@
                                 <fontDescription key="fontDescription" type="boldSystem" pointSize="20"/>
                                 <color key="textColor" red="0.33886426689999999" green="0.29680687189999999" blue="0.81009870770000003" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                 <nil key="highlightedColor"/>
+                                <userDefinedRuntimeAttributes>
+                                    <userDefinedRuntimeAttribute type="boolean" keyPath="isHeroEnabled" value="YES"/>
+                                    <userDefinedRuntimeAttribute type="boolean" keyPath="isHeroEnabledForSubviews" value="YES"/>
+                                </userDefinedRuntimeAttributes>
                             </label>
                             <collectionView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" layoutMarginsFollowReadableWidth="YES" showsHorizontalScrollIndicator="NO" showsVerticalScrollIndicator="NO" contentInsetAdjustmentBehavior="scrollableAxes" dataMode="prototypes" translatesAutoresizingMaskIntoConstraints="NO" id="DuL-qY-5DX">
                                 <rect key="frame" x="0.0" y="100" width="375" height="567"/>

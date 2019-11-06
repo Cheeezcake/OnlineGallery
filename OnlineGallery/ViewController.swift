@@ -9,6 +9,7 @@
 import UIKit
 import RxSwift
 import RxAlamofire
+import Hero
 
 enum SourceType {
     case new
@@ -39,6 +40,7 @@ class ViewController: UIViewController {
     override func viewDidAppear(_ animated: Bool) {
         self.setTitle()
         super.viewDidAppear(false)
+        self.hero.isEnabled = true
     }
     
     override func viewDidLoad() {

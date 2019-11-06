@@ -26,6 +26,7 @@ class ItemCollectionViewCell: UICollectionViewCell {
 
                                     .cacheOriginalImage
             ])
+        imageView.hero.id = String(item!.image.id)
         self.layer.cornerRadius = 5.0
         self.layer.borderWidth = 0.5
         self.layer.borderColor = UIColor.white.cgColor
