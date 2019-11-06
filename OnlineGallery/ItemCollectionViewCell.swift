@@ -11,7 +11,7 @@ import Kingfisher
 
 class ItemCollectionViewCell: UICollectionViewCell {
     
-    @IBOutlet weak var imageView: UIImageView!
+    @IBOutlet weak public var imageView: UIImageView!
     
     var gallery: GalleryItem?
     
@@ -22,6 +22,8 @@ class ItemCollectionViewCell: UICollectionViewCell {
                                    options: [
                                     .scaleFactor(UIScreen.main.scale),
                                     .transition(.fade(1)),
+                                    .processor(DownsamplingImageProcessor(size: imageView.frame.size)),
+
                                     .cacheOriginalImage
             ])
         self.layer.cornerRadius = 5.0

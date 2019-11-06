@@ -9,9 +9,9 @@
 import Foundation
 import UIKit
 //import Alamofire
-import Kingfisher
 import RxSwift
 import RxAlamofire
+import Kingfisher
 
 class DetailViewController: UIViewController {
     

@@ -7,11 +7,8 @@
 //
 
 import UIKit
-import Alamofire
-import NVActivityIndicatorView
 import RxSwift
 import RxAlamofire
-import RxKingfisher
 
 enum SourceType {
     case new
@@ -48,6 +45,7 @@ class ViewController: UIViewController {
         super.viewDidLoad()
         collectionView.dataSource =  self
         collectionView.delegate = self
+        collectionView.prefetchDataSource = self
         refreshControl.addTarget(self, action: #selector(refreshData), for: .valueChanged )
         collectionView.addSubview(refreshControl)
         loadData(){
@@ -68,34 +66,49 @@ class ViewController: UIViewController {
                     if self.currentPageOfNew <= self.pageCountOfNew {
                         self.currentPageOfNew += 1
                         print("Loading 'New' started. Page: \(self.currentPageOfNew) of ")
-                        Alamofire.request("http://gallery.dev.webant.ru/api/photos?new=true&popular=false&page=\(self.currentPageOfNew)&limit=4").responseData{ response in
-                            let fgalleryItemArray: GalleryResponse = try! JSONDecoder().decode(GalleryResponse.self, from: response.result.value! )
-                            self.galleryItemArrayNew.append(contentsOf: fgalleryItemArray.data.map{ $0 })
-                            self.collectionView.reloadData()
-                            self.pageCountOfNew = fgalleryItemArray.countOfPages
-                            completionHandler?()
-                        }
+                        _ = data(.get, "http://gallery.dev.webant.ru/api/photos?new=true&popular=false&page=\(self.currentPageOfNew)&limit=10")
+                            //.debug()
+                            .observeOn(MainScheduler.instance)
+                            .subscribe(onNext: { data in
+                                
+                                let fgalleryItemArray: GalleryResponse = try! JSONDecoder().decode(GalleryResponse.self, from: data)
+                                self.galleryItemArrayNew.append(contentsOf: fgalleryItemArray.data.map{ $0 })
+                                self.collectionView.reloadData()
+                                self.pageCountOfNew = fgalleryItemArray.countOfPages
+                            }, onError: { error in
+                                print(error)
+                            },
+                               onCompleted:{
+                                print("Completed")
+                                completionHandler?()
+                            })
                         print(self.pageCountOfNew)
                     }
                 } else {
                     if self.currentPageOfPopular <= self.pageCountOfPopular {
                         self.currentPageOfPopular += 1
                         print("Loading 'Popular' started. Page: \(self.currentPageOfPopular) of ")
-                        Alamofire.request("http://gallery.dev.webant.ru/api/photos?new=false&popular=true&page=\(self.currentPageOfPopular)&limit=4").responseData{ response in
-                            let fgalleryItemArray: GalleryResponse = try! JSONDecoder().decode(GalleryResponse.self, from: response.result.value! )
-                            self.galleryItemArrayPopular.append(contentsOf: fgalleryItemArray.data.map{ $0 })
-                            self.collectionView.reloadData()
-                            self.pageCountOfPopular = fgalleryItemArray.countOfPages
-                            completionHandler?()
-                        }
+                        _ = data(.get, "http://gallery.dev.webant.ru/api/photos?new=false&popular=true&page=\(self.currentPageOfPopular)&limit=10")
+                            //.debug()
+                            .observeOn(MainScheduler.instance)
+                            .subscribe(onNext: { data in
+                                let fgalleryItemArray: GalleryResponse = try! JSONDecoder().decode(GalleryResponse.self, from: data)
+                                self.galleryItemArrayPopular.append(contentsOf: fgalleryItemArray.data.map{ $0 })
+                                self.collectionView.reloadData()
+                                self.pageCountOfPopular = fgalleryItemArray.countOfPages
+                            }, onError: { error in
+                                print(error)
+                            },
+                               onCompleted:{
+                                print("Completed")
+                                completionHandler?()
+                            })
                         print(self.pageCountOfPopular)
                     }
                 }
             }else {
                 //here to hide cells
                 self.hideCells()
-                self.noConnectionImage.isHidden = false
-                self.noConnectionTitle.isHidden = false
                 print("No Internet")
                 DispatchQueue.main.asyncAfter(deadline: .now()+0.3, execute: {
                     self.loadData() {
@@ -107,6 +120,10 @@ class ViewController: UIViewController {
                 completionHandler?()
             }
         }
+    }
+    
+    override func didReceiveMemoryWarning() {
+        super.didReceiveMemoryWarning()
     }
     
     func chooseArray() -> [GalleryItem] {
@@ -150,7 +167,11 @@ class ViewController: UIViewController {
 extension ViewController: UICollectionViewDataSource, UICollectionViewDelegate, Loadable{
     
     func hideCells(){
-        collectionView.isHidden = true
+        DispatchQueue.main.async {
+            self.collectionView.isHidden = true
+            self.noConnectionImage.isHidden = false
+            self.noConnectionTitle.isHidden = false
+        }
     }
     
     func showCells(){
@@ -204,13 +225,24 @@ extension ViewController: UICollectionViewDataSource, UICollectionViewDelegate, 
     }
 }
 
-extension ViewController: UICollectionViewDelegateFlowLayout, UIScrollViewDelegate {
+extension ViewController: UICollectionViewDelegateFlowLayout, UIScrollViewDelegate, UICollectionViewDataSourcePrefetching {
     
+    func collectionView(_ collectionView: UICollectionView, prefetchItemsAt indexPaths: [IndexPath]) {
+        
+        loadData(){DispatchQueue.main.async {
+            self.collectionView.reloadData()
+            }
+        }
+    }
+        
     func collectionView(_ collectionView: UICollectionView, willDisplay cell: UICollectionViewCell, forItemAt indexPath: IndexPath) {
-        if indexPath.row == chooseArray().count-1{
-            loadData(){DispatchQueue.main.async {
-                self.collectionView.reloadData()
-                }}
+        //trying to make images reload if their downloads were broken
+        if let cell = cell as? ItemCollectionViewCell{
+            if !((cell.imageView.kf.indicator?.view.isHidden)!){
+                cell.setup(chooseArray()[indexPath.row])
+                collectionView.reloadItems(at: [indexPath])
+                print("start reloading image for cell")
+            }
         }
     }
     
