@@ -29,7 +29,6 @@ class DetailViewController: UIViewController {
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(false)
         setTitle()
-       // self.hero.isEnabled = true
     }
     
     override func viewDidLoad() {
@@ -37,11 +36,8 @@ class DetailViewController: UIViewController {
         self.detImageView.hero.id = String(self.detImage!.image.id)
         self.detImageView.image = image
         self.detImageView.kf.indicatorType = .activity
-        //self.detImageView.contentMode = UIView.ContentMode.scaleAspectFit
         self.detTitleLable.text = detImage!.name
         self.detDescription.text = detImage!.description
-        //self.detDescription.isEditable = false
-        //self.detDescription.isSelectable = false
     }
     
     

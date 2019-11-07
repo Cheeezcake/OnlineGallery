@@ -14,7 +14,6 @@ class GalleryTabBar: UITabBarController, UITabBarControllerDelegate {
         super.viewDidLoad()
         
         self.delegate = self
-        //       self.tabBarController?.delegate = self
         
         let storyboard = UIStoryboard(name: "Main", bundle: nil)
         
