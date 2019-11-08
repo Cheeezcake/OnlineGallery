@@ -30,4 +30,8 @@ final class LoadingView: UIView {
     public func animate() {
         activityIndicatorView.startAnimating()
     }
+    
+    public func setViewToTurnOff(){
+        
+    }
 }

@@ -36,6 +36,7 @@ class ViewController: UIViewController {
     var currentPageOfPopular = 0
     var pageCountOfNew = 0
     var pageCountOfPopular = 0
+    var disposeBag = DisposeBag()
     
     override func viewDidAppear(_ animated: Bool) {
         self.setTitle()
@@ -52,7 +53,7 @@ class ViewController: UIViewController {
         collectionView.addSubview(refreshControl)
         loadData(){
             DispatchQueue.main.async {
-                if self.chooseArray().count > 0{
+                if self.currentArrayOfItems().count > 0{
                     self.collectionView.reloadData()
                 }
             }
@@ -128,7 +129,7 @@ class ViewController: UIViewController {
         super.didReceiveMemoryWarning()
     }
     
-    func chooseArray() -> [GalleryItem] {
+    func currentArrayOfItems() -> [GalleryItem] {
         if type == .new {
             return galleryItemArrayNew
         } else {
@@ -157,7 +158,7 @@ class ViewController: UIViewController {
         }
         
         loadData(){DispatchQueue.main.async {
-            if self.chooseArray().count > 0 {
+            if self.currentArrayOfItems().count > 0 {
                 self.collectionView.reloadData()
             }
             self.refreshControl.endRefreshing()
@@ -189,37 +190,45 @@ extension ViewController: UICollectionViewDataSource, UICollectionViewDelegate, 
     func openDetailVC(at index: Int) {
         let storyboard = UIStoryboard(name: "Main", bundle: nil)
         let vc = storyboard.instantiateViewController(withIdentifier: "detailVC") as? DetailViewController
-        vc?.detImage = chooseArray()[index]
-        let stringURL = "http://gallery.dev.webant.ru/media/\(chooseArray()[index].image.contentUrl)"
+        vc?.detImage = currentArrayOfItems()[index]
+        let stringURL = "http://gallery.dev.webant.ru/media/\(currentArrayOfItems()[index].image.contentUrl)"
         var image = UIImage()
-        self.showLoadingView()
         _ = data(.get, stringURL)
             .debug()
             .observeOn(MainScheduler.instance)
-            .subscribe(onNext: { data in
+            .do(onNext: { data in
                 image = UIImage(data: data)!
                 vc?.image = image
                 print(data)
-            }, onError: { error in
+            }, onError: { (error) in
                 print(error)
-            },
-               onCompleted:{
+            }, onCompleted: {
                 print("Completed")
                 self.navigationController?.pushViewController(vc!, animated: true)
+            }, onSubscribe: {
+                print("Subscription")
+                self.showLoadingView()
+            }, onSubscribed: {
+                print("Subscribed")
+            }, onDispose: {
                 self.hideLoadingView()
             })
+            .subscribe()
+            .disposed(by: disposeBag)
+        
+        // loadingDetailImage.dispose()
     }
     
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         
-        return chooseArray().count
+        return currentArrayOfItems().count
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         if let itemCollectionCell = collectionView.dequeueReusableCell(withReuseIdentifier: "itemCell", for: indexPath) as? ItemCollectionViewCell{
             
-            if chooseArray().count > 0 {
-                itemCollectionCell.setup(chooseArray()[indexPath.row])
+            if currentArrayOfItems().count > 0 {
+                itemCollectionCell.setup(currentArrayOfItems()[indexPath.row])
             }
             return itemCollectionCell
         }
@@ -230,23 +239,46 @@ extension ViewController: UICollectionViewDataSource, UICollectionViewDelegate, 
 extension ViewController: UICollectionViewDelegateFlowLayout, UIScrollViewDelegate, UICollectionViewDataSourcePrefetching {
     
     func collectionView(_ collectionView: UICollectionView, prefetchItemsAt indexPaths: [IndexPath]) {
-        
-        loadData(){DispatchQueue.main.async {
-            self.collectionView.reloadData()
-            }
-        }
+
+//        for indexPath in indexPaths{
+//            if indexPath.row == currentArrayOfItems().count-1 {
+//                //if indexPaths.contains(lastIndexPath()!) {
+//                loadData(){DispatchQueue.main.async {
+//                    self.collectionView.reloadData()
+//                    }
+//                }
+//            }
+//        }
     }
-        
+    
     func collectionView(_ collectionView: UICollectionView, willDisplay cell: UICollectionViewCell, forItemAt indexPath: IndexPath) {
-        //trying to make images reload if their downloads were broken
-        if let cell = cell as? ItemCollectionViewCell{
-            if !((cell.imageView.kf.indicator?.view.isHidden)!){
-                cell.setup(chooseArray()[indexPath.row])
-                collectionView.reloadItems(at: [indexPath])
-                print("start reloading image for cell")
-            }
+        if indexPath.row == currentArrayOfItems().count-4{
+            loadData(){DispatchQueue.main.async {
+                self.collectionView.reloadData()
+                }}
         }
     }
+    
+//    func lastIndexPath() -> IndexPath? {
+//        for sectionIndex in (0..<collectionView.numberOfSections).reversed() {
+//            if collectionView.numberOfItems(inSection: sectionIndex) > 0 {
+//                return IndexPath.init(item: collectionView.numberOfItems(inSection: sectionIndex)-1, section: sectionIndex)
+//            }
+//        }
+//
+//        return nil
+//    }
+        
+//    func collectionView(_ collectionView: UICollectionView, willDisplay cell: UICollectionViewCell, forItemAt indexPath: IndexPath) {
+        //trying to make images reload if their downloads were broken
+//        if let cell = cell as? ItemCollectionViewCell{
+//            if !((cell.imageView.kf.indicator?.view.isHidden)!){
+//                cell.setup(currentArrayOfItems()[indexPath.row])
+//                collectionView.reloadItems(at: [indexPath])
+//                print("start reloading image for cell")
+//            }
+//        }
+//    }
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
         let yourWidth = (collectionView.bounds.width-45) / 2.0
@@ -267,16 +299,11 @@ extension ViewController: UICollectionViewDelegateFlowLayout, UIScrollViewDelega
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumLineSpacingForSectionAt section: Int) -> CGFloat {
         return 15
     }
-}
-
-extension Loadable where Self: UIViewController {
-    
     func showLoadingView() {
         if let items = tabBarController?.tabBar.items {
             items.forEach { $0.isEnabled = false }
         }
-        self.view.isUserInteractionEnabled = false
-        self.tabBarItem.isEnabled = false
+        //self.view.isUserInteractionEnabled = false
         let loadingView = LoadingView()
         view.addSubview(loadingView)
         
@@ -286,7 +313,7 @@ extension Loadable where Self: UIViewController {
         loadingView.centerXAnchor.constraint(equalTo: view.centerXAnchor).isActive = true
         loadingView.centerYAnchor.constraint(equalTo: view.centerYAnchor).isActive = true
         loadingView.animate()
-        
+        isTapToCancelEnabled()
         loadingView.tag = Constants.loadingViewTag
     }
     
@@ -294,11 +321,43 @@ extension Loadable where Self: UIViewController {
         if let items = tabBarController?.tabBar.items {
             items.forEach { $0.isEnabled = true }
         }
-        self.view.isUserInteractionEnabled = true
+        //self.view.isUserInteractionEnabled = true
         view.subviews.forEach { subview in
             if subview.tag == Constants.loadingViewTag {
                 subview.removeFromSuperview()
             }
+        }
+    }
+    
+    func isTapToCancelEnabled() {
+        let tapToCancelLoading = UIView()
+        var tapGesture = UITapGestureRecognizer()
+        tapGesture = UITapGestureRecognizer(target: self, action: #selector(self.cancelLoadingView(_:)))
+        tapGesture.numberOfTapsRequired = 1
+        tapGesture.numberOfTouchesRequired = 1
+        tapToCancelLoading.addGestureRecognizer(tapGesture)
+        tapToCancelLoading.isUserInteractionEnabled = true
+        tapToCancelLoading.tag = Constants.loadingViewTag
+        tapToCancelLoading.frame = UIScreen.main.bounds
+        //tapToCancelLoading.backgroundColor = #colorLiteral(red: 0, green: 0.9768045545, blue: 0, alpha: 1)
+        view.addSubview(tapToCancelLoading)
+        
+    }
+    @objc func cancelLoadingView(_ sender: UITapGestureRecognizer) {
+        self.hideLoadingView()
+        disposeBag = DisposeBag()
+    }
+}
+
+//extension UIViewController: Loadable {
+//
+//
+//}
+public extension UIViewController {
+    internal func makeViewAsFullScreen() {
+        let viewFrame:CGRect = self.view.frame
+        if viewFrame.origin.y > 0 || viewFrame.origin.x > 0 {
+            self.view.frame = UIScreen.main.bounds
         }
     }
 }
