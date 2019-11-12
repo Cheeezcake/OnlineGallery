@@ -27,7 +27,7 @@ class DetailViewController: UIViewController {
     var image:UIImage? = nil
     
     override func viewWillAppear(_ animated: Bool) {
-        super.viewWillAppear(false)
+        super.viewWillAppear(animated)
         setTitle()
     }
     
@@ -43,9 +43,5 @@ class DetailViewController: UIViewController {
     
     func setTitle() {
         self.navigationController?.navigationBar.topItem?.title = " "
-    }
-    
-    override func viewWillDisappear(_ animated: Bool) {
-        super.viewWillDisappear(animated)
     }
 }

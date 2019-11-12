@@ -12,9 +12,7 @@ import Kingfisher
 class ItemCollectionViewCell: UICollectionViewCell {
     
     @IBOutlet weak public var imageView: UIImageView!
-    
-   // var gallery: GalleryItem?
-    
+        
     override func prepareForReuse() {
         super.prepareForReuse()
         imageView.image = UIImage()
@@ -23,13 +21,12 @@ class ItemCollectionViewCell: UICollectionViewCell {
     func setup(_ item: GalleryItem!) {
         imageView.kf.indicatorType = .activity
         self.imageView.kf.setImage(with: URL(string: "http://gallery.dev.webant.ru/media/\(item!.image.contentUrl)")!,
-                                   //placeholder: UIImage(named: "placeholderImage"),
                                    options: [
                                     .scaleFactor(UIScreen.main.scale),
                                     .transition(.fade(1)),
                                     .processor(DownsamplingImageProcessor(size: imageView.frame.size)),
                                     //.cacheOriginalImage
-                                    //.alsoPrefetchToMemory
+                                    .alsoPrefetchToMemory
             ])
         imageView.hero.id = String(item!.image.id)
         self.layer.cornerRadius = 5.0
@@ -74,7 +71,7 @@ extension UIView {
             return UIColor(cgColor: layer.borderColor!)
         }
         set {
-            layer.borderColor = borderColor?.cgColor
+            layer.borderColor = newValue?.cgColor
         }
     }
 }
