@@ -175,6 +175,8 @@ extension ViewController: UICollectionViewDataSource, Loadable{
                 itemCollectionCell.setup(currentArrayOfItems()[indexPath.row])
             }
             
+            itemCollectionCell.configureCellShape()
+            
             return itemCollectionCell
             
         }

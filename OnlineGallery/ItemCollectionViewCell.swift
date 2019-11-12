@@ -29,6 +29,9 @@ class ItemCollectionViewCell: UICollectionViewCell {
                                     .alsoPrefetchToMemory
             ])
         imageView.hero.id = String(item!.image.id)
+    }
+
+    func configureCellShape() {
         self.layer.cornerRadius = 5.0
         self.layer.borderWidth = 0.5
         self.layer.borderColor = UIColor.white.cgColor
@@ -42,7 +45,6 @@ class ItemCollectionViewCell: UICollectionViewCell {
         self.layer.backgroundColor = UIColor.clear.cgColor
     }
 }
-
 
 extension UIView {
     
