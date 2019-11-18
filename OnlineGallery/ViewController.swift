@@ -20,7 +20,7 @@ fileprivate struct Constants {
     /// an arbitrary tag id for the loading view, so it can be retrieved later without keeping a reference to it
     fileprivate static let loadingViewTag = 1234
 }
-
+//mvp, mvvm, viper | clean architecture общие принципы
 class ViewController: UIViewController {
     
     @IBOutlet weak var collectionView: UICollectionView!
@@ -54,7 +54,7 @@ class ViewController: UIViewController {
         collectionView.addSubview(refreshControl)
         loadData(){
             DispatchQueue.main.async {
-                if self.currentArrayOfItems().count > 0{
+                if self.currentArrayOfItem.count > 0 {
                     self.collectionView.reloadData()
                 }
             }
@@ -64,10 +64,16 @@ class ViewController: UIViewController {
     func loadNewImages(completionHandler: (() ->Void)?){
         if self.currentPageOfNew <= self.pageCountOfNew {
             self.currentPageOfNew += 1
-            print("Loading 'New' started. Page: \(self.currentPageOfNew)")
-           data(.get, "\(self.apiEndPoint)/api/photos?new=true&popular=false&page=\(self.currentPageOfNew)&limit=10")
+           data(.get, "\(self.apiEndPoint)/api/photos?new=true&popular=false&page=\(self.currentPageOfNew)&limit=15")
             .observeOn(MainScheduler.instance)
-            .do(onNext: { data in
+            .do(onError: { (error) in
+                print(error)
+            }, onCompleted: {
+                completionHandler?()
+            }, onSubscribe: {
+                print("Loading 'New' started. Page: \(self.currentPageOfNew)")
+            })
+            .subscribe(onNext: { data in
                 let tempGalleryItemArray: GalleryResponse = try!
                     JSONDecoder().decode(GalleryResponse.self, from: data)
                 self.galleryItemArrayNew.append(contentsOf: tempGalleryItemArray.data.map{ $0 })
@@ -77,15 +83,10 @@ class ViewController: UIViewController {
             }, onError: { (error) in
                 print(error)
             }, onCompleted: {
-                //print("Completed")
                 completionHandler?()
-            }, onSubscribe: {
-                //print("Subscription")
-            }, onSubscribed: {
-                //print("Subscribed")
-            }, onDispose: {
+                print("Completed")
+            }, onDisposed: {
             })
-            .subscribe()
             .disposed(by: disposeBag)
         }
     }
@@ -93,30 +94,25 @@ class ViewController: UIViewController {
     func loadPopularImages(completionHandler: (() ->Void)?){
         if self.currentPageOfPopular <= self.pageCountOfPopular {
             self.currentPageOfPopular += 1
-            print("Loading 'Popular' started. Page: \(self.currentPageOfPopular)")
-           data(.get, "\(self.apiEndPoint)/api/photos?new=false&popular=true&page=\(self.currentPageOfPopular)&limit=10")
-            .observeOn(MainScheduler.instance)
-            .do(onNext: { data in
-                let tempGalleryItemArray: GalleryResponse = try!
-                    JSONDecoder().decode(GalleryResponse.self, from: data)
-                self.galleryItemArrayPopular.append(contentsOf: tempGalleryItemArray.data.map{ $0 })
-                self.collectionView.reloadData()
-                self.pageCountOfPopular = tempGalleryItemArray.countOfPages
-                print("of \(self.pageCountOfPopular)")
-            }, onError: { (error) in
-                print(error)
-            }, onCompleted: {
-                completionHandler?()
-                //print("Completed")
-                completionHandler?()
-            }, onSubscribe: {
-                //print("Subscription")
-            }, onSubscribed: {
-                //print("Subscribed")
-            }, onDispose: {
-            })
-            .subscribe()
-            .disposed(by: disposeBag)
+            data(.get, "\(self.apiEndPoint)/api/photos?new=false&popular=true&page=\(self.currentPageOfPopular)&limit=15")
+                .observeOn(MainScheduler.instance)
+                .do(onSubscribe: {
+                    print("Loading 'Popular' started. Page: \(self.currentPageOfPopular)")
+                })
+                .subscribe(onNext: { data in
+                    let tempGalleryItemArray: GalleryResponse = try!
+                        JSONDecoder().decode(GalleryResponse.self, from: data)
+                    self.galleryItemArrayPopular.append(contentsOf: tempGalleryItemArray.data.map{ $0 })
+                    self.collectionView.reloadData()
+                    self.pageCountOfPopular = tempGalleryItemArray.countOfPages
+                    print("of \(self.pageCountOfPopular)")
+                }, onError: { (error) in
+                    print(error)
+                }, onCompleted: {
+                    completionHandler?()
+                    print("Completed")
+                })
+                .disposed(by: disposeBag)
         }
     }
     
@@ -147,10 +143,14 @@ class ViewController: UIViewController {
                 completionHandler?()
             }
         }
+        //TODO: "Разберись, Стас"
+//        currentArrayOfItem.enumerated().reduce(0) { (acc, tuple) -> Int in
+//            return acc + tuple.offset
+//        }
     }
     
     
-    func currentArrayOfItems() -> [GalleryItem] {
+    var currentArrayOfItem: [GalleryItem] {
         if type == .new {
             return galleryItemArrayNew
         } else {
@@ -166,8 +166,8 @@ class ViewController: UIViewController {
         }
     }
     
-    @objc func refreshData(){
-        if type == .new{
+    @objc func refreshData() {
+        if type == .new {
             currentPageOfNew = 0
             pageCountOfNew = 0
             galleryItemArrayNew = [GalleryItem]()
@@ -183,12 +183,12 @@ class ViewController: UIViewController {
     
     func endRefreshing() {
         
-        DispatchQueue.main.asyncAfter(deadline: .now()+2, execute: {
+        DispatchQueue.main.asyncAfter(deadline: .now() + 2, execute: {
             //sleep(1)
             self.refreshControl.endRefreshing()
 
         })
-        if self.currentArrayOfItems().count > 0 {
+        if self.currentArrayOfItem.count > 0 {
             self.collectionView.reloadData()
         }
     }
@@ -204,7 +204,7 @@ extension ViewController: UICollectionViewDataSource, Loadable{
     
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         
-        return currentArrayOfItems().count
+        return currentArrayOfItem.count
     }
     
     func collectionView(_ collectionView: UICollectionView,
@@ -212,12 +212,10 @@ extension ViewController: UICollectionViewDataSource, Loadable{
         if let itemCollectionCell = collectionView.dequeueReusableCell(withReuseIdentifier: "itemCell", for: indexPath)
             as? ItemCollectionViewCell{
             
-            if currentArrayOfItems().count > 0 {
-                itemCollectionCell.setup(currentArrayOfItems()[indexPath.row])
+            if currentArrayOfItem.count > 0 {
+                itemCollectionCell.setup(currentArrayOfItem[indexPath.row])
             }
-            
-            itemCollectionCell.configureCellShape()
-            
+                        
             return itemCollectionCell
             
         }
@@ -241,30 +239,34 @@ extension ViewController: UICollectionViewDataSource, Loadable{
     func openDetailVC(at index: Int) {
         let storyboard = UIStoryboard(name: "Main", bundle: nil)
         let vc = storyboard.instantiateViewController(withIdentifier: "detailVC") as? DetailViewController
-        vc?.detImage = currentArrayOfItems()[index]
-        let stringURL = "http://gallery.dev.webant.ru/media/\(currentArrayOfItems()[index].image.contentUrl)"
+        vc?.detImage = currentArrayOfItem[index]
+        let stringURL = "http://gallery.dev.webant.ru/media/\(currentArrayOfItem[index].image.contentUrl)"
         var image = UIImage()
         data(.get, stringURL)
-            .debug()
+        //  .debug()
             .observeOn(MainScheduler.instance)
             .do(onNext: { data in
-                image = UIImage(data: data)!
-                vc?.image = image
-                print(data)
             }, onError: { (error) in
-                print(error)
             }, onCompleted: {
-                print("Completed")
-                self.navigationController?.pushViewController(vc!, animated: true)
             }, onSubscribe: {
                 print("Subscription")
                 self.showLoadingView()
             }, onSubscribed: {
                 print("Subscribed")
             }, onDispose: {
+            })
+            .subscribe(onNext: { data in
+                image = UIImage(data: data)!
+                vc?.image = image
+                print(data)
+            }, onError: { error in
+                print(error)
+            }, onCompleted: {
+                print("Completed")
+                self.navigationController?.pushViewController(vc!, animated: true)
+            }, onDisposed: {
                 self.hideLoadingView()
             })
-            .subscribe()
             .disposed(by: disposeBag)
     }
 }
@@ -273,7 +275,7 @@ extension ViewController: UICollectionViewDelegateFlowLayout {
     
     func collectionView(_ collectionView: UICollectionView, willDisplay cell: UICollectionViewCell,
                         forItemAt indexPath: IndexPath) {
-        if indexPath.row == currentArrayOfItems().count-4{
+        if indexPath.row == currentArrayOfItem.count-1{
             loadData() {
                 DispatchQueue.main.async {
                     self.collectionView.reloadData()

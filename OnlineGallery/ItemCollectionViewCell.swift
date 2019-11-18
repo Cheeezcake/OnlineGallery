@@ -12,6 +12,7 @@ import Kingfisher
 class ItemCollectionViewCell: UICollectionViewCell {
     
     @IBOutlet weak public var imageView: UIImageView!
+    private var isViewPrepared = false
         
     override func prepareForReuse() {
         super.prepareForReuse()
@@ -19,6 +20,7 @@ class ItemCollectionViewCell: UICollectionViewCell {
     }
     
     func setup(_ item: GalleryItem!) {
+        configureCellShapeIfNeeded()
         imageView.kf.indicatorType = .activity
         self.imageView.kf.setImage(with: URL(string: "http://gallery.dev.webant.ru/media/\(item!.image.contentUrl)")!,
                                    options: [
@@ -31,18 +33,21 @@ class ItemCollectionViewCell: UICollectionViewCell {
         imageView.hero.id = String(item!.image.id)
     }
 
-    func configureCellShape() {
-        self.layer.cornerRadius = 5.0
-        self.layer.borderWidth = 0.5
-        self.layer.borderColor = UIColor.white.cgColor
-        self.layer.masksToBounds = true
-        self.layer.shadowColor = UIColor.lightGray.cgColor
-        self.layer.shadowOffset = CGSize(width: 0, height: 2.0)
-        self.layer.shadowRadius = 5.0
-        self.layer.shadowOpacity = 0.5
-        self.layer.masksToBounds = false
-        self.layer.shadowPath = UIBezierPath(roundedRect: self.bounds, cornerRadius: self.layer.cornerRadius).cgPath
-        self.layer.backgroundColor = UIColor.clear.cgColor
+    func configureCellShapeIfNeeded() {
+        if !isViewPrepared {
+            self.layer.cornerRadius = 5.0
+            self.layer.borderWidth = 0.5
+            self.layer.borderColor = UIColor.white.cgColor
+            self.layer.masksToBounds = true
+            self.layer.shadowColor = UIColor.lightGray.cgColor
+            self.layer.shadowOffset = CGSize(width: 0, height: 2.0)
+            self.layer.shadowRadius = 5.0
+            self.layer.shadowOpacity = 0.5
+            self.layer.masksToBounds = false
+            self.layer.shadowPath = UIBezierPath(roundedRect: self.bounds, cornerRadius: self.layer.cornerRadius).cgPath
+            self.layer.backgroundColor = UIColor.clear.cgColor
+            self.isViewPrepared = true
+        }
     }
 }
 
