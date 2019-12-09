@@ -21,6 +21,7 @@
 		0988730F236B354A0083A645 /* LoadingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0988730E236B354A0083A645 /* LoadingView.swift */; };
 		09F39187235788D50045D194 /* DetailViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 09F39186235788D50045D194 /* DetailViewController.swift */; };
 		45501FEB382859E6BD98AAB7 /* Pods_OnlineGallery.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F56F12F394BB26211CF9B121 /* Pods_OnlineGallery.framework */; };
+		852AD255239145C6009ECCD7 /* SnowFlakeManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 852AD254239145C6009ECCD7 /* SnowFlakeManager.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -60,6 +61,7 @@
 		09815DD2233E452C008198AF /* ItemCollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ItemCollectionViewCell.swift; sourceTree = "<group>"; };
 		0988730E236B354A0083A645 /* LoadingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoadingView.swift; sourceTree = "<group>"; };
 		09F39186235788D50045D194 /* DetailViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DetailViewController.swift; sourceTree = "<group>"; };
+		852AD254239145C6009ECCD7 /* SnowFlakeManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SnowFlakeManager.swift; sourceTree = "<group>"; };
 		9341CFBD21478670070FE226 /* Pods-OnlineGallery.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-OnlineGallery.debug.xcconfig"; path = "Target Support Files/Pods-OnlineGallery/Pods-OnlineGallery.debug.xcconfig"; sourceTree = "<group>"; };
 		E4C41DACCA76C6F6425D7B63 /* Pods-OnlineGallery.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-OnlineGallery.release.xcconfig"; path = "Target Support Files/Pods-OnlineGallery/Pods-OnlineGallery.release.xcconfig"; sourceTree = "<group>"; };
 		F56F12F394BB26211CF9B121 /* Pods_OnlineGallery.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_OnlineGallery.framework; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -117,6 +119,7 @@
 		095088AC233D0B2E00F904B6 /* OnlineGallery */ = {
 			isa = PBXGroup;
 			children = (
+				852AD254239145C6009ECCD7 /* SnowFlakeManager.swift */,
 				095088AD233D0B2E00F904B6 /* AppDelegate.swift */,
 				095088AF233D0B2E00F904B6 /* ViewController.swift */,
 				09F39186235788D50045D194 /* DetailViewController.swift */,
@@ -240,10 +243,12 @@
 					};
 					095088BD233D0B2F00F904B6 = {
 						CreatedOnToolsVersion = 10.1;
+						LastSwiftMigration = 1110;
 						TestTargetID = 095088A9233D0B2E00F904B6;
 					};
 					095088C8233D0B2F00F904B6 = {
 						CreatedOnToolsVersion = 10.1;
+						LastSwiftMigration = 1110;
 						TestTargetID = 095088A9233D0B2E00F904B6;
 					};
 				};
@@ -349,6 +354,7 @@
 				09815DD1233E2ACE008198AF /* Structures.swift in Sources */,
 				0977F2442359FC29000E29CE /* GalleryTabBar.swift in Sources */,
 				0988730F236B354A0083A645 /* LoadingView.swift in Sources */,
+				852AD255239145C6009ECCD7 /* SnowFlakeManager.swift in Sources */,
 				095088AE233D0B2E00F904B6 /* AppDelegate.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -573,7 +579,7 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = cheeezcake.OnlineGalleryTests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				SWIFT_VERSION = 4.2;
+				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/OnlineGallery.app/OnlineGallery";
 			};
@@ -594,7 +600,7 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = cheeezcake.OnlineGalleryTests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				SWIFT_VERSION = 4.2;
+				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/OnlineGallery.app/OnlineGallery";
 			};
@@ -614,7 +620,7 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = cheeezcake.OnlineGalleryUITests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				SWIFT_VERSION = 4.2;
+				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				TEST_TARGET_NAME = OnlineGallery;
 			};
@@ -634,7 +640,7 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = cheeezcake.OnlineGalleryUITests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				SWIFT_VERSION = 4.2;
+				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				TEST_TARGET_NAME = OnlineGallery;
 			};
